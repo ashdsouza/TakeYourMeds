@@ -38,13 +38,20 @@
                 android:hint="@string/hint_password" />
         </android.support.design.widget.TextInputLayout>
 
-        <Button android:id="@+id/btn_login"
-            android:layout_width="fill_parent"
+        <TextView
+            android:id="@+id/user_creds_err"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/login_btn"
-            android:background="@color/colorPrimary"
-            android:layout_marginTop="40dp"
-            android:textColor="@android:color/white"/>
+            android:visibility="invisible"
+            android:textColor="#F00"/>
+
+            <Button android:id="@+id/btn_login"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_btn"
+                android:background="@color/colorPrimary"
+                android:layout_marginTop="40dp"
+                android:textColor="@android:color/white"/>
 
     </LinearLayout>
 

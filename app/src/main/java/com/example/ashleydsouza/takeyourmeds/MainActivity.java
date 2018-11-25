@@ -10,12 +10,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
     private TextInputLayout inputLayoutEmail, inputLayoutPassword;
+    private TextView userCredsErr;
     private Button btnSignUp;
 
     @Override
@@ -25,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
 
         inputLayoutEmail = findViewById(R.id.input_layout_email);
         inputLayoutPassword = findViewById(R.id.input_layout_password);
+        userCredsErr = findViewById(R.id.user_creds_err);
         inputEmail = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);
         btnSignUp = findViewById(R.id.btn_login);
@@ -50,10 +53,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+        if (!validateCredentials()) {
+            return;
+        }
+
         Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
+
     }
 
     private boolean validateEmail() {
+
         String email = inputEmail.getText().toString().trim();
 
         if (email.isEmpty() || !isValidEmail(email)) {
@@ -74,6 +83,24 @@ public class MainActivity extends AppCompatActivity {
             return false;
         } else {
             inputLayoutPassword.setErrorEnabled(false);
+        }
+
+        return true;
+    }
+
+    private boolean validateCredentials() {
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+
+        //TODO: validate if user has registered first time by making call to DB
+
+        if (!email.equalsIgnoreCase("ash@test.com") && !password.equals("ashley")) {
+            userCredsErr.setText(getString(R.string.err_user_not_registered));
+            userCredsErr.setVisibility(View.VISIBLE);
+            requestFocus(inputEmail);
+            return false;
+        } else {
+            userCredsErr.setVisibility(View.INVISIBLE);
         }
 
         return true;
