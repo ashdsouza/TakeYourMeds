@@ -1,5 +1,6 @@
 package com.example.ashleydsouza.takeyourmeds;
 
+import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -57,8 +58,11 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
-
+//        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
+        String email = inputEmail.getText().toString().trim();
+        Intent intent = new Intent(this, HomePageActivity.class);
+        intent.putExtra("email", email);
+        startActivity(intent);
     }
 
     private boolean validateEmail() {

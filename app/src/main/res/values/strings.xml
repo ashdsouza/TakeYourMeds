@@ -6,4 +6,5 @@
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_pass">Enter password</string>
     <string name="err_user_not_registered">User not registered</string>
+    <string name="welcome_msg">Hi</string>
 </resources>
