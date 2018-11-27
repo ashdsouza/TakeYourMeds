@@ -12,11 +12,11 @@ public class HomePageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
+//        Intent intent = getIntent();
+//        String email = intent.getStringExtra("email");
 
         TextView welcome = findViewById(R.id.welcome_view);
-        String welcomeString = getString(R.string.welcome_msg) + " " + email + "!";
+        String welcomeString = "Hi Ashley!";//getString(R.string.welcome_msg) + " " + email + "!";
         welcome.setText(welcomeString);
     }
 }
