@@ -3,13 +3,13 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/add_prescription"
-            android:title="Add Prescription" />
+            android:title="@string/homepg_nav_add_prescription" />
         <item
             android:id="@+id/show_calender"
             android:checked="true"
-            android:title="Show Calender"/>
+            android:title="@string/homepg_nav_show_calender"/>
         <item
             android:id="@+id/settings"
-            android:title="Settings"/>
+            android:title="@string/homepg_nav_settings"/>
     </group>
 </menu>

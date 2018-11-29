@@ -1,11 +1,19 @@
 <resources>
     <string name="app_name">TakeYourMeds</string>
+    <!-- This is Login Screen strings -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="login_btn">Login</string>
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_pass">Enter password</string>
     <string name="err_user_not_registered">User not registered</string>
+    <!-- This is HomePage strings -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="welcome_msg">Hi</string>
     <string name="no_user_prescription">No Prescriptions Added</string>
+    <string name="homepg_nav_add_prescription">Add Prescription</string>
+    <string name="homepg_nav_show_calender">Calender</string>
+    <string name="homepg_nav_settings">Settings</string>
 </resources>

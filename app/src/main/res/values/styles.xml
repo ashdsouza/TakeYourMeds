@@ -18,10 +18,4 @@
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <!-- TODO: This is for the HomePage, find a better name for the app_name -->
-    <string name="app_name">Profile</string>
-
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
