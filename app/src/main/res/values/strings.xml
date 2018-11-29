@@ -13,7 +13,11 @@
 
     <string name="welcome_msg">Hi</string>
     <string name="no_user_prescription">No Prescriptions Added</string>
+    <string name="home_page">Dashboard</string>
     <string name="homepg_nav_add_prescription">Add Prescription</string>
     <string name="homepg_nav_show_calender">Calender</string>
     <string name="homepg_nav_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

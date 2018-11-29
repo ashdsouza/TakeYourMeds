@@ -2,6 +2,7 @@ package com.example.ashleydsouza.takeyourmeds;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class HomePageActivity extends AppCompatActivity {
+public class HomePageActivity extends AppCompatActivity
+        implements  AddPrescription.OnFragmentInteractionListener,
+                    Settings.OnFragmentInteractionListener,
+                    ShowCalender.OnFragmentInteractionListener,
+                    UserHome.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
@@ -35,6 +40,14 @@ public class HomePageActivity extends AppCompatActivity {
 //        Intent intent = getIntent();
 //        String email = intent.getStringExtra("email");
 
+        //set Home as default fragment
+        Bundle bundle = new Bundle();
+        bundle.putString("email", "ash@test.com");      //change this to email from intent of MainActivity
+        UserHome homeFragment = new UserHome();
+        homeFragment.setArguments(bundle);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, homeFragment).commit();
+
         // Set a Toolbar to replace the ActionBar.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -43,7 +56,7 @@ public class HomePageActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.navigation_drawer);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.user_email);
-        navUsername.setText("ash@test.com");  //change this to email from intent
+        navUsername.setText("ash@test.com");  //change this to email from intent of MainActivity
 
 
         //Animation for the Hamburger icon to make sure it is clicked during navigation
@@ -55,17 +68,6 @@ public class HomePageActivity extends AppCompatActivity {
 
         //setup the drawer view
         setupDrawerContent(navigationView);
-
-        TextView welcome = findViewById(R.id.welcome_view);
-        String welcomeString = "Hi Ashley!";//getString(R.string.welcome_msg) + " " + email + "!";
-
-
-        Calendar nowCal = Calendar.getInstance();
-        String prescriptionForToday = getPrescriptionsForToday(nowCal.getTime(), null);
-
-        welcomeString = welcomeString + "\n" + prescriptionForToday;
-
-        welcome.setText(welcomeString);
     }
 
     @Override
@@ -122,15 +124,20 @@ public class HomePageActivity extends AppCompatActivity {
         Fragment fragment = null;
         Class fragmentClass;
         switch (menuItem.getItemId()) {
+            case R.id.home_page:
+                fragmentClass = UserHome.class;
+                break;
             case R.id.add_prescription:
-                fragmentClass = AddPrescriptionFragment.class;
+                fragmentClass = AddPrescription.class;
                 break;
             case R.id.show_calender:
-                fragmentClass = ShowCalenderFragment.class;
+                fragmentClass = ShowCalender.class;
+                break;
             case R.id.settings:
-                fragmentClass = SettingsFragment.class;
+                fragmentClass = Settings.class;
+                break;
             default:
-                fragmentClass = ShowCalenderFragment.class;
+                fragmentClass = UserHome.class;
         }
 
         try {
@@ -153,21 +160,7 @@ public class HomePageActivity extends AppCompatActivity {
         mDrawerLayout.closeDrawers();
     }
 
-    public String getPrescriptionsForToday(Date date, String userEmail) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy");
-        String loginDate = dateFormat.format(date);
-
-        /**
-         Get list of prescription based on date and userEmail
-         set this to true when call is made to DB and there are results
-         **/
-        boolean hasPrescription = false;
-        String listOfPrescription = "For " + loginDate + "\n";
-        if(hasPrescription) {
-            listOfPrescription += "";
-        } else {
-            listOfPrescription += getString(R.string.no_user_prescription);
-        }
-        return listOfPrescription;
+    public void onFragmentInteraction(Uri uri) {
+        //Do nothing
     }
 }

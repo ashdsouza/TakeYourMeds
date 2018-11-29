@@ -58,7 +58,6 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-//        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
         String email = inputEmail.getText().toString().trim();
         Intent intent = new Intent(this, HomePageActivity.class);
         intent.putExtra("email", email);
