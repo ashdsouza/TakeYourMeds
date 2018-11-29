@@ -79,7 +79,18 @@
             android:id="@+id/flContent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <TextView
+            android:id="@+id/welcome_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginLeft="16dp"
+            android:textColor="#000"
+            android:textSize="15sp" />
+        </FrameLayout>
     </LinearLayout>
 
     <android.support.design.widget.NavigationView
