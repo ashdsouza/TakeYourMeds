@@ -107,7 +107,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     }
 
     public void onDeleteMedicine(View v) {
-        ViewParent par = v.getParent().getParent();
+        ViewParent par = v.getParent().getParent().getParent();
         parentLinearLayout.removeView((View) par);
     }
 
