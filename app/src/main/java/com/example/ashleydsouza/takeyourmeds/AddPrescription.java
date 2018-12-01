@@ -1,12 +1,16 @@
 package com.example.ashleydsouza.takeyourmeds;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 
 /**
@@ -17,7 +21,7 @@ import android.view.ViewGroup;
  * Use the {@link AddPrescription#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddPrescription extends Fragment {
+public class AddPrescription extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +32,7 @@ public class AddPrescription extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private LinearLayout parentLinearLayout;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -64,7 +69,46 @@ public class AddPrescription extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_prescription, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_add_prescription, container, false);
+
+        parentLinearLayout = rootView.findViewById(R.id.parent_linear_layout);
+        Button addButton = rootView.findViewById(R.id.add_button);
+        addButton.setOnClickListener(this);
+
+        return rootView;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch(v.getId()) {
+            case R.id.add_button:
+                onAddMedicine(v);
+                break;
+            case R.id.delete_button:
+                onDeleteMedicine(v);
+                break;
+        }
+    }
+
+    public void onAddMedicine(View v) {
+        Context context = getContext();
+        if(context != null) {
+            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+            final View rowView = inflater.inflate(R.layout.prescription_row, null);
+            parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
+
+            Button addButton = rowView.findViewById(R.id.add_button);
+            addButton.setOnClickListener(this);
+
+            Button delButton = rowView.findViewById(R.id.delete_button);
+            delButton.setOnClickListener(this);
+        }
+    }
+
+    public void onDeleteMedicine(View v) {
+        ViewParent par = v.getParent().getParent();
+        parentLinearLayout.removeView((View) par);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

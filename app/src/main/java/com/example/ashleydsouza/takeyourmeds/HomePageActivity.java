@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -17,10 +16,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 
 public class HomePageActivity extends AppCompatActivity
         implements  AddPrescription.OnFragmentInteractionListener,
@@ -146,18 +141,20 @@ public class HomePageActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        if(fragment != null) {
+            // Insert the fragment by replacing any existing fragment
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-        /**
-         * Highlight the selected item has been done by NavigationView,
-         * Set Action Bar title
-         * Close navigation drawer
-        **/
-        menuItem.setChecked(true);
-        setTitle(menuItem.getTitle());
-        mDrawerLayout.closeDrawers();
+            /**
+             * Highlight the selected item has been done by NavigationView,
+             * Set Action Bar title
+             * Close navigation drawer
+             **/
+            menuItem.setChecked(true);
+            setTitle(menuItem.getTitle());
+            mDrawerLayout.closeDrawers();
+        }
     }
 
     public void onFragmentInteraction(Uri uri) {
