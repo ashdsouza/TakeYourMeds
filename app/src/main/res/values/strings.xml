@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">TakeYourMeds</string>
     <string name="optional">Optional Field</string>
+    <string name="save">Save</string>
     <!-- Login Screen -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>

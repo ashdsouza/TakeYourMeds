@@ -1,16 +1,29 @@
 package com.example.ashleydsouza.takeyourmeds;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+
+import java.util.ArrayList;
 
 
 /**
@@ -31,8 +44,10 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private String mParam1;
     private String mParam2;
 
+    private static final Integer RELEVANT_LINEAR_LAYOUTS = 3;
     private OnFragmentInteractionListener mListener;
     private LinearLayout parentLinearLayout;
+    private ArrayList<MedicineInformation> medicines;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -63,6 +78,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -76,6 +92,91 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         addButton.setOnClickListener(this);
 
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.save, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.save_action:
+                savePrescription();
+                break;
+        }
+        return super.onOptionsItemSelected(item); // important line
+    }
+
+    public void savePrescription() {
+        medicines = new ArrayList<>();
+        int viewCount = parentLinearLayout.getChildCount();
+
+        //Save Medicine data in very first entry
+        saveInModel(parentLinearLayout);
+
+        //Save Medicine data if there are more rows added
+        if(viewCount > RELEVANT_LINEAR_LAYOUTS) {
+            for (int i = RELEVANT_LINEAR_LAYOUTS; i < viewCount; i++) {
+                CardView view = (CardView) parentLinearLayout.getChildAt(i);
+                LinearLayout inCard = view.findViewById(R.id.linear_layout_inside_card);
+                saveInModel(inCard);
+            }
+        }
+
+        //had medicine data
+        if(medicines.size() > 0) {
+            //TODO: Save Array in DB
+        }
+    }
+
+    private void saveInModel(LinearLayout layout) {
+        MedicineInformation medicine = new MedicineInformation();
+
+        for(int i = 0; i < RELEVANT_LINEAR_LAYOUTS; i++) {
+            LinearLayout view = (LinearLayout) layout.getChildAt(i);
+            for(int j = 0;j< view.getChildCount(); j++) {
+                View elem = view.getChildAt(j);
+                switch (elem.getId()) {
+                    case R.id.med_name:
+                        EditText name = (EditText) elem;
+                        if(!name.getText().toString().equals(""))
+                            medicine.setName(name.getText().toString());
+                        break;
+                    case R.id.med_dosage_amount:
+                        EditText amount = (EditText) elem;
+                        if(!amount.getText().toString().equals(""))
+                            medicine.setAmount(Integer.valueOf(amount.getText().toString()));
+                        break;
+                    case R.id.med_dosage:
+                        Spinner dosage = (Spinner) elem;
+                        if(dosage.getSelectedItem() != null)
+                            medicine.setDosage(dosage.getSelectedItem().toString());
+                        break;
+                    case R.id.med_time:
+                        Spinner time = (Spinner) elem;
+                        if(time.getSelectedItem() != null)
+                            medicine.setTime(time.getSelectedItem().toString());
+                        break;
+                    case R.id.med_notes:
+                        EditText notes = (EditText) elem;
+                        if(!notes.getText().toString().equals(""))
+                            medicine.setAdditionalNotes(notes.getText().toString());
+                        break;
+                }
+            }
+        }
+        medicine.printMedicine();
+        if(isMedicineEntered(medicine))
+            medicines.add(medicine);
+    }
+
+    public boolean isMedicineEntered(MedicineInformation medicine) {
+        return medicine.getName() != null && medicine.getAmount() != null &&
+                medicine.getDosage() != null && medicine.getTime() != null;
     }
 
     @Override
