@@ -1,4 +1,4 @@
-package com.example.ashleydsouza.takeyourmeds;
+package com.example.ashleydsouza.takeyourmeds.fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -7,22 +7,19 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
+import com.example.ashleydsouza.takeyourmeds.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link UserHome.OnFragmentInteractionListener} interface
+ * {@link ShowCalender.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link UserHome#newInstance} factory method to
+ * Use the {@link ShowCalender#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserHome extends Fragment {
+public class ShowCalender extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -34,7 +31,7 @@ public class UserHome extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    public UserHome() {
+    public ShowCalender() {
         // Required empty public constructor
     }
 
@@ -44,11 +41,11 @@ public class UserHome extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment UserHome.
+     * @return A new instance of fragment ShowCalender.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserHome newInstance(String param1, String param2) {
-        UserHome fragment = new UserHome();
+    public static ShowCalender newInstance(String param1, String param2) {
+        ShowCalender fragment = new ShowCalender();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -69,42 +66,7 @@ public class UserHome extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_user_home, container, false);
-
-        TextView home = rootView.findViewById(R.id.home_view);
-
-        //Get email from Activity
-        Bundle bundle = getArguments();
-        String email = "";
-        if(bundle != null) { email = bundle.getString("email");}
-
-        String welcomeString = "Hi Ashley! " + email;
-
-        Calendar nowCal = Calendar.getInstance();
-        String prescriptionForToday = getPrescriptionsForToday(nowCal.getTime(), null);
-
-        welcomeString = welcomeString + "\n" + prescriptionForToday;
-        home.setText(welcomeString);
-
-        return rootView;
-    }
-
-    public String getPrescriptionsForToday(Date date, String userEmail) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy");
-        String loginDate = dateFormat.format(date);
-
-        /**
-         Get list of prescription based on date and userEmail
-         set this to true when call is made to DB and there are results
-         **/
-        boolean hasPrescription = false;
-        String listOfPrescription = "For " + loginDate + "\n";
-        if(hasPrescription) {
-            listOfPrescription += "";
-        } else {
-            listOfPrescription += getString(R.string.no_user_prescription);
-        }
-        return listOfPrescription;
+        return inflater.inflate(R.layout.fragment_show_calender, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

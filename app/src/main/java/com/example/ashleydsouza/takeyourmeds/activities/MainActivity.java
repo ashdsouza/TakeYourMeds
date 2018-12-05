@@ -1,4 +1,4 @@
-package com.example.ashleydsouza.takeyourmeds;
+package com.example.ashleydsouza.takeyourmeds.activities;
 
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
@@ -12,7 +12,8 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.example.ashleydsouza.takeyourmeds.R;
 
 public class MainActivity extends AppCompatActivity {
 

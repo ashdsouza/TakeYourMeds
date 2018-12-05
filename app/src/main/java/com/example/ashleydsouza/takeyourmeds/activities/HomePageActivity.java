@@ -1,6 +1,5 @@
-package com.example.ashleydsouza.takeyourmeds;
+package com.example.ashleydsouza.takeyourmeds.activities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -16,6 +15,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.fragments.AddPrescription;
+import com.example.ashleydsouza.takeyourmeds.fragments.Settings;
+import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
+import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
 
 public class HomePageActivity extends AppCompatActivity
         implements  AddPrescription.OnFragmentInteractionListener,
