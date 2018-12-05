@@ -1,20 +1,26 @@
 package com.example.ashleydsouza.takeyourmeds.models;
 
 
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
-import androidx.room.PrimaryKey;
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
-import static androidx.room.ForeignKey.CASCADE;
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity(foreignKeys = @ForeignKey(entity = Users.class, parentColumns = "userId", childColumns = "userId", onDelete = CASCADE))
+@Entity(foreignKeys = @ForeignKey(entity = Users.class, parentColumns = "userId", childColumns = "userId", onDelete = CASCADE), indices = {@Index("userId")})
 public class MedicineInformation {
     @PrimaryKey(autoGenerate = true)
     private int medId;
 
+    @NonNull
     private String name;
+    @NonNull
     private String dosage;
+    @NonNull
     private Integer amount;
+    @NonNull
     private String time;
     private String additionalNotes;
 

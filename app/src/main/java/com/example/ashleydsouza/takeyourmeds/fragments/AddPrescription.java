@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.cruds.MedicineCrudImplementation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 
 import java.util.ArrayList;
@@ -45,6 +46,8 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private LinearLayout parentLinearLayout;
     private ArrayList<MedicineInformation> medicines;
+    private MedicineCrudImplementation medCrud;
+    private Context context;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -110,6 +113,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
 
     public void savePrescription() {
         medicines = new ArrayList<>();
+        medCrud = new MedicineCrudImplementation(context);
         int viewCount = parentLinearLayout.getChildCount();
 
         //Save Medicine data in very first entry
@@ -169,6 +173,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         medicine.printMedicine();
         if(isMedicineEntered(medicine))
             medicines.add(medicine);
+//            medCrud.insertMeds(medicine);
     }
 
     public boolean isMedicineEntered(MedicineInformation medicine) {
@@ -189,9 +194,8 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     }
 
     public void onAddMedicine(View v) {
-        Context context = getContext();
         if(context != null) {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
             final View rowView = inflater.inflate(R.layout.prescription_row, null);
             parentLinearLayout.addView(rowView, parentLinearLayout.getChildCount());
@@ -219,6 +223,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        this.context = context;
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {

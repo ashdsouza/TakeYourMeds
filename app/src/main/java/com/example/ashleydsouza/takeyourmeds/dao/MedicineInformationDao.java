@@ -1,16 +1,18 @@
 package com.example.ashleydsouza.takeyourmeds.dao;
 
+
 import android.arch.lifecycle.LiveData;
+import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
+import android.arch.persistence.room.Insert;
+import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 
 import java.util.List;
 
-import androidx.room.Dao;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.Query;
-import androidx.room.Update;
+
 
 @Dao
 public interface MedicineInformationDao {
@@ -25,8 +27,8 @@ public interface MedicineInformationDao {
     public void deleteMedicineInformation(MedicineInformation meds);
 
     @Query("SELECT * FROM MedicineInformation WHERE userId = :userId")
-    LiveData<List<MedicineInformation>> getAllMedicineEntriesForUser(int userId);
+    public LiveData<List<MedicineInformation>> getAllMedicineEntriesForUser(int userId);
 
     @Query("SELECT * FROM MedicineInformation WHERE medId = :medId")
-    LiveData<MedicineInformation> getMedicineInformationById(int medId);
+    public LiveData<MedicineInformation> getMedicineInformationById(int medId);
 }

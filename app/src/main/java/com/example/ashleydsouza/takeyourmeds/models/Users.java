@@ -1,15 +1,20 @@
 package com.example.ashleydsouza.takeyourmeds.models;
 
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+
+import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.PrimaryKey;
+import android.support.annotation.NonNull;
 
 @Entity
 public class Users {
     @PrimaryKey(autoGenerate = true)
     private int userId;
 
+    @NonNull
     private String name;
+    @NonNull
     private String email;
+    @NonNull
     private String password;
     private boolean sendNotification;
 
