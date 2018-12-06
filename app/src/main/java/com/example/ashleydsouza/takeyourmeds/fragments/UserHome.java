@@ -77,10 +77,10 @@ public class UserHome extends Fragment {
 
         //Get email from Activity
         Bundle bundle = getArguments();
-        String email = "";
-        if(bundle != null) { email = bundle.getString("email");}
+        String name = "";
+        if(bundle != null) { name = bundle.getString("name");}
 
-        String welcomeString = "Hi Ashley! " + email;
+        String welcomeString = "Hi " + name + " !";
 
         Calendar nowCal = Calendar.getInstance();
         String prescriptionForToday = getPrescriptionsForToday(nowCal.getTime(), null);

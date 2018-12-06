@@ -2,6 +2,7 @@
     <string name="app_name">TakeYourMeds</string>
     <string name="optional">Optional Field</string>
     <string name="save">Save</string>
+    <string name="sign_up">Sign Up</string>
     <!-- Login Screen -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -9,6 +10,11 @@
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_pass">Enter password</string>
     <string name="err_user_not_registered">User not registered</string>
+    <!-- Registration Page -->
+    <string name="user_name">Name</string>
+    <string name="user_email">Email</string>
+    <string name="user_password">Password</string>
+    <string name="err_msg_name">No Name entered</string>
     <!-- Home Page -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

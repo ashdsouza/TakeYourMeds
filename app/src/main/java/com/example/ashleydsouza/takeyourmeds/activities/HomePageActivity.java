@@ -1,5 +1,6 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -37,12 +38,13 @@ public class HomePageActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-//        Intent intent = getIntent();
-//        String email = intent.getStringExtra("email");
+        Intent intent = getIntent();
+        String email = intent.getStringExtra("email");
+        String name = intent.getStringExtra("name");
 
         //set Home as default fragment
         Bundle bundle = new Bundle();
-        bundle.putString("email", "ash@test.com");      //change this to email from intent of MainActivity
+        bundle.putString("name", name);
         UserHome homeFragment = new UserHome();
         homeFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -56,7 +58,7 @@ public class HomePageActivity extends AppCompatActivity
         navigationView = findViewById(R.id.navigation_drawer);
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername = headerView.findViewById(R.id.user_email);
-        navUsername.setText("ash@test.com");  //change this to email from intent of MainActivity
+        navUsername.setText(email);
 
 
         //Animation for the Hamburger icon to make sure it is clicked during navigation

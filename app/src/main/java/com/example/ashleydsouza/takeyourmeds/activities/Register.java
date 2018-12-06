@@ -1,6 +1,5 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
-import android.arch.lifecycle.LiveData;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -12,55 +11,47 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.cruds.UserCrudImplementation;
 import com.example.ashleydsouza.takeyourmeds.models.Users;
 
-import java.util.List;
+public class Register extends AppCompatActivity {
 
-public class MainActivity extends AppCompatActivity {
-
-    private EditText inputEmail, inputPassword;
-    private TextInputLayout inputLayoutEmail, inputLayoutPassword;
-    private TextView userCredsErr;
-    private Button btnLogin, btnSignup;
-    private String realName;
+    private EditText inputName, inputEmail, inputPassword;
+    private TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword;
+    private Button btnSignup;
+    private UserCrudImplementation userCrud;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_register);
 
+        inputLayoutName = findViewById(R.id.input_layout_name);
         inputLayoutEmail = findViewById(R.id.input_layout_email);
         inputLayoutPassword = findViewById(R.id.input_layout_password);
-        userCredsErr = findViewById(R.id.user_creds_err);
+        inputName = findViewById(R.id.user_name);
         inputEmail = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);
-        btnLogin = findViewById(R.id.btn_login);
         btnSignup = findViewById(R.id.btn_signup);
 
         inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail));
         inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginForm();
-            }
-        });
-
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, Register.class);
-                startActivity(intent);
+            public void onClick(View v) {
+                validateForm();
             }
         });
     }
 
-    private void loginForm() {
+    private void validateForm() {
+        if (!validateName()) {
+            return;
+        }
 
         if (!validateEmail()) {
             return;
@@ -70,15 +61,37 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (!validateCredentials()) {
-            return;
-        }
+        saveUserData();
 
-        String email = inputEmail.getText().toString().trim();
-        Intent intent = new Intent(this, HomePageActivity.class);
-        intent.putExtra("email", email);
-        intent.putExtra("name", realName);
+        Toast.makeText(this, "You are Registered", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
+    }
+
+    private void saveUserData() {
+        Users user = new Users();
+        user.setName(inputName.getText().toString().trim());
+        user.setEmail(inputEmail.getText().toString().trim());
+        user.setPassword(inputPassword.getText().toString().trim());
+
+        userCrud = new UserCrudImplementation(getApplicationContext());
+        try {
+            userCrud.insertUser(user);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private boolean validateName() {
+        String name = inputName.getText().toString().trim();
+        if(name.isEmpty()) {
+            inputLayoutName.setError(getString(R.string.err_msg_name));
+            requestFocus(inputName);
+            return false;
+        } else {
+            inputLayoutName.setErrorEnabled(false);
+        }
+        return true;
     }
 
     private boolean validateEmail() {
@@ -108,28 +121,6 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private boolean validateCredentials() {
-        String email = inputEmail.getText().toString().trim();
-        String password = inputPassword.getText().toString().trim();
-
-        //Check if user is registered
-        UserCrudImplementation userCrud = new UserCrudImplementation(getApplicationContext());
-        LiveData<List<Users>> user = userCrud.getUser(email, password);
-
-        if(user.getValue()!= null && user.getValue().size() == 0) {
-            userCredsErr.setText(getString(R.string.err_user_not_registered));
-            userCredsErr.setVisibility(View.VISIBLE);
-            requestFocus(inputEmail);
-            return false;
-        } else {
-            if(user.getValue()!= null)
-                realName = user.getValue().get(0).getName();
-            userCredsErr.setVisibility(View.INVISIBLE);
-        }
-
-        return true;
-    }
-
     private static boolean isValidEmail(String email) {
         return !TextUtils.isEmpty(email) && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
@@ -140,7 +131,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private class MyTextWatcher implements TextWatcher {
+    protected class MyTextWatcher implements TextWatcher {
 
         private View view;
 
@@ -156,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
 
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
+                case R.id.user_name:
+                    validateName();
+                    break;
                 case R.id.input_email:
                     validateEmail();
                     break;
