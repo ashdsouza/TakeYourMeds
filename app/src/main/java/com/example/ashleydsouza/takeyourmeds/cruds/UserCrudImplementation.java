@@ -1,7 +1,10 @@
 package com.example.ashleydsouza.takeyourmeds.cruds;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import com.example.ashleydsouza.takeyourmeds.database.AppDatabase;
 import com.example.ashleydsouza.takeyourmeds.models.Users;
@@ -11,6 +14,7 @@ import java.util.List;
 public class UserCrudImplementation {
 
     private AppDatabase appDb;
+    private MediatorLiveData<List<Users>> mUsersLive = new MediatorLiveData<>();
     public UserCrudImplementation(Context context) {
         appDb = AppDatabase.getAppDatabase(context);
     }
@@ -59,6 +63,18 @@ public class UserCrudImplementation {
     }
 
     public LiveData<List<Users>> getUser(String email, String password) {
-        return appDb.userDao().getUsersWithCredentials(email, password);
+        final LiveData<List<Users>> users = appDb.userDao().getUsersWithCredentials(email, password);
+
+        mUsersLive.addSource(users, new Observer<List<Users>>() {
+            @Override
+            public void onChanged(@Nullable List<Users> userList) {
+                if(userList != null && !userList.isEmpty()) {
+                    mUsersLive.removeSource(users);
+                    mUsersLive.setValue(userList);
+                }
+            }
+        });
+
+        return mUsersLive;
     }
 }

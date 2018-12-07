@@ -1,7 +1,10 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MediatorLiveData;
+import android.arch.lifecycle.Observer;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -108,26 +111,41 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    private LiveData<List<Users>> getRegisteredUser(String email, String password) {
+        UserCrudImplementation userCrud = new UserCrudImplementation(getApplicationContext());
+        final MediatorLiveData<List<Users>> userList = new MediatorLiveData<>();
+
+        //Check if user is registered
+        userCrud.getUser(email, password).observe(this, new Observer<List<Users>>() {
+            @Override
+            public void onChanged(@Nullable List<Users> users) {
+                if (users != null && !users.isEmpty()) {
+                    System.out.println("Registered users = " + users.size());
+                    System.out.println("Name = " + users.get(0).getName());
+                    userList.setValue(users);
+                }
+            }
+        });
+        return userList;
+    }
+
     private boolean validateCredentials() {
         String email = inputEmail.getText().toString().trim();
         String password = inputPassword.getText().toString().trim();
 
-        //Check if user is registered
-        UserCrudImplementation userCrud = new UserCrudImplementation(getApplicationContext());
-        LiveData<List<Users>> user = userCrud.getUser(email, password);
-
-        if(user.getValue()!= null && user.getValue().size() == 0) {
+        LiveData<List<Users>> list = getRegisteredUser(email, password);
+        if(list.getValue() != null && list.getValue().isEmpty()) {
             userCredsErr.setText(getString(R.string.err_user_not_registered));
             userCredsErr.setVisibility(View.VISIBLE);
             requestFocus(inputEmail);
             return false;
         } else {
-            if(user.getValue()!= null)
-                realName = user.getValue().get(0).getName();
+            if(list.getValue() != null)
+                realName = list.getValue().get(0).getName();
+                System.out.println("Real name = " + realName);
             userCredsErr.setVisibility(View.INVISIBLE);
+            return true;
         }
-
-        return true;
     }
 
     private static boolean isValidEmail(String email) {

@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
+    android:orientation="vertical"
     tools:context=".fragments.UserHome">
 
     <TextView
@@ -14,5 +15,11 @@
     android:textColor="#000"
     android:textSize="15sp"
     android:text="Hello!!"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/prescriptions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
