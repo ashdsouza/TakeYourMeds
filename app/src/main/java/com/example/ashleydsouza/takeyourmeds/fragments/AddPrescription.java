@@ -1,5 +1,6 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import android.widget.Spinner;
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.cruds.MedicineCrudImplementation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
 
 import java.util.ArrayList;
 
@@ -46,8 +49,10 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private LinearLayout parentLinearLayout;
     private ArrayList<MedicineInformation> medicines;
-    private MedicineCrudImplementation medCrud;
+    private MedicineViewModel medViewModel;
     private Context context;
+    private Session session;
+    private int userId;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -78,6 +83,11 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+        session = new Session(getActivity());
+        userId = session.getUserId();
+
         setHasOptionsMenu(true);
     }
 
@@ -113,7 +123,6 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
 
     public void savePrescription() {
         medicines = new ArrayList<>();
-        medCrud = new MedicineCrudImplementation(context);
         int viewCount = parentLinearLayout.getChildCount();
 
         //Save Medicine data in very first entry
@@ -128,9 +137,14 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             }
         }
 
-        //had medicine data
+        System.out.println(medicines.size());
+        //check if you have medicine data to add
         if(medicines.size() > 0) {
-            //TODO: Save Array in DB
+            try {
+                medViewModel.insert(medicines);
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -171,9 +185,10 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             }
         }
         medicine.printMedicine();
-        if(isMedicineEntered(medicine))
+        if(isMedicineEntered(medicine)) {
+            medicine.setUserId(userId);
             medicines.add(medicine);
-//            medCrud.insertMeds(medicine);
+        }
     }
 
     public boolean isMedicineEntered(MedicineInformation medicine) {

@@ -1,19 +1,33 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
+import android.arch.lifecycle.GeneratedAdapter;
+import android.arch.lifecycle.Lifecycle;
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.MethodCallsLogger;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.adapter.GenericAdaptor;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -35,6 +49,8 @@ public class UserHome extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private MedicineViewModel medViewModel;
+    private Session session;
 
     public UserHome() {
         // Required empty public constructor
@@ -75,18 +91,43 @@ public class UserHome extends Fragment {
 
         TextView home = rootView.findViewById(R.id.home_view);
 
+        session = new Session(getActivity());
+        String name = session.getName();
+        int userId = session.getUserId();
+
         //Get email from Activity
-        Bundle bundle = getArguments();
-        String name = "";
-        if(bundle != null) { name = bundle.getString("name");}
+//        Bundle bundle = getArguments();
+//        String name = "";
+//        int userId = -1;
+//        if(bundle != null) {
+//            name = bundle.getString("name");
+//            userId = bundle.getInt("userId");
+//        }
+
+        System.out.println("UserId = " + userId);
 
         String welcomeString = "Hi " + name + " !";
 
-        Calendar nowCal = Calendar.getInstance();
-        String prescriptionForToday = getPrescriptionsForToday(nowCal.getTime(), null);
+//        Calendar nowCal = Calendar.getInstance();
+//        String prescriptionForToday = getPrescriptionsForToday(nowCal.getTime(), null);
 
-        welcomeString = welcomeString + "\n" + prescriptionForToday;
+//        welcomeString = welcomeString + "\n" + prescriptionForToday;
         home.setText(welcomeString);
+
+        RecyclerView recyclerView = rootView.findViewById(R.id.prescriptions);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+
+        final GenericAdaptor adapter = new GenericAdaptor();
+        recyclerView.setAdapter(adapter);
+
+        medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+        medViewModel.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
+            @Override
+            public void onChanged(@Nullable List<MedicineInformation> medicineInformations) {
+                adapter.setMedicines(medicineInformations);
+            }
+        });
 
         return rootView;
     }

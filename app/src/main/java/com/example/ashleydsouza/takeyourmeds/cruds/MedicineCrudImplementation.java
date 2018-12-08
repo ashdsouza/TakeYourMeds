@@ -15,7 +15,7 @@ public class MedicineCrudImplementation {
         appDb = AppDatabase.getAppDatabase(context);
     }
 
-    public void insertMeds(final MedicineInformation meds) {
+    public void insertMeds(final List<MedicineInformation> meds) {
         new Thread(new Runnable() {
             @Override
             public void run() {

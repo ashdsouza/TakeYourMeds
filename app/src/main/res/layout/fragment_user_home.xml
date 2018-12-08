@@ -2,8 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingLeft="16dp"
-    android:paddingRight="16dp"
     android:orientation="vertical"
     tools:context=".fragments.UserHome">
 
@@ -11,7 +9,9 @@
     android:id="@+id/home_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="30dp"
+    android:layout_marginTop="20dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
     android:textColor="#000"
     android:textSize="15sp"
     android:text="Hello!!"/>
@@ -19,7 +19,6 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/prescriptions"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </android.support.v7.widget.RecyclerView>
-
+        android:layout_height="match_parent"
+        tools:listitem="@layout/prescription_view"/>
 </LinearLayout>

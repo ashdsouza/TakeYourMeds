@@ -18,7 +18,7 @@ import java.util.List;
 public interface MedicineInformationDao {
 
     @Insert
-    public void insertMedicineInformation(MedicineInformation meds);
+    public void insertMedicineInformation(List<MedicineInformation> meds);
 
     @Update
     public void updateMedicineInformation(MedicineInformation meds);

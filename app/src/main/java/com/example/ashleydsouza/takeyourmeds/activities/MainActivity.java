@@ -1,8 +1,7 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MediatorLiveData;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
@@ -18,8 +17,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.ashleydsouza.takeyourmeds.R;
-import com.example.ashleydsouza.takeyourmeds.cruds.UserCrudImplementation;
+import com.example.ashleydsouza.takeyourmeds.models.UserViewModel;
 import com.example.ashleydsouza.takeyourmeds.models.Users;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
 
 import java.util.List;
 
@@ -30,11 +30,17 @@ public class MainActivity extends AppCompatActivity {
     private TextView userCredsErr;
     private Button btnLogin, btnSignup;
     private String realName;
+    private UserViewModel userViewModel;
+    private Session session;
+    private Users userObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        session = new Session(this);
 
         inputLayoutEmail = findViewById(R.id.input_layout_email);
         inputLayoutPassword = findViewById(R.id.input_layout_password);
@@ -73,15 +79,15 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if (!validateCredentials()) {
-            return;
-        }
+        validateCredentials();
 
-        String email = inputEmail.getText().toString().trim();
-        Intent intent = new Intent(this, HomePageActivity.class);
-        intent.putExtra("email", email);
-        intent.putExtra("name", realName);
-        startActivity(intent);
+        //No errors, set user session and open HomePage
+        if(userCredsErr.isShown()) {
+            session.storeUser(userObj);
+
+            Intent intent = new Intent(this, HomePageActivity.class);
+            startActivity(intent);
+        }
     }
 
     private boolean validateEmail() {
@@ -111,41 +117,28 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private LiveData<List<Users>> getRegisteredUser(String email, String password) {
-        UserCrudImplementation userCrud = new UserCrudImplementation(getApplicationContext());
-        final MediatorLiveData<List<Users>> userList = new MediatorLiveData<>();
-
-        //Check if user is registered
-        userCrud.getUser(email, password).observe(this, new Observer<List<Users>>() {
+    private void getRegisteredUser(String email, String password) {
+        userViewModel.getUserList(email, password).observe(this, new Observer<List<Users>>() {
             @Override
             public void onChanged(@Nullable List<Users> users) {
-                if (users != null && !users.isEmpty()) {
-                    System.out.println("Registered users = " + users.size());
-                    System.out.println("Name = " + users.get(0).getName());
-                    userList.setValue(users);
+                if(users != null && !users.isEmpty()) {
+//                    realName = users.get(0).getName();
+                    userObj = users.get(0);
+                    userCredsErr.setVisibility(View.INVISIBLE);
+                } else {
+                    userCredsErr.setText(getString(R.string.err_user_not_registered));
+                    userCredsErr.setVisibility(View.VISIBLE);
+                    requestFocus(inputEmail);
                 }
             }
         });
-        return userList;
     }
 
-    private boolean validateCredentials() {
+    private void validateCredentials() {
         String email = inputEmail.getText().toString().trim();
         String password = inputPassword.getText().toString().trim();
 
-        LiveData<List<Users>> list = getRegisteredUser(email, password);
-        if(list.getValue() != null && list.getValue().isEmpty()) {
-            userCredsErr.setText(getString(R.string.err_user_not_registered));
-            userCredsErr.setVisibility(View.VISIBLE);
-            requestFocus(inputEmail);
-            return false;
-        } else {
-            if(list.getValue() != null)
-                realName = list.getValue().get(0).getName();
-                System.out.println("Real name = " + realName);
-            userCredsErr.setVisibility(View.INVISIBLE);
-            return true;
-        }
+        getRegisteredUser(email, password);
     }
 
     private static boolean isValidEmail(String email) {

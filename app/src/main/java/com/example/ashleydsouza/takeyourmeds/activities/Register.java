@@ -1,5 +1,6 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.cruds.UserCrudImplementation;
+import com.example.ashleydsouza.takeyourmeds.models.UserViewModel;
 import com.example.ashleydsouza.takeyourmeds.models.Users;
 
 public class Register extends AppCompatActivity {
@@ -22,12 +24,14 @@ public class Register extends AppCompatActivity {
     private EditText inputName, inputEmail, inputPassword;
     private TextInputLayout inputLayoutName, inputLayoutEmail, inputLayoutPassword;
     private Button btnSignup;
-    private UserCrudImplementation userCrud;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         inputLayoutName = findViewById(R.id.input_layout_name);
         inputLayoutEmail = findViewById(R.id.input_layout_email);
@@ -74,9 +78,8 @@ public class Register extends AppCompatActivity {
         user.setEmail(inputEmail.getText().toString().trim());
         user.setPassword(inputPassword.getText().toString().trim());
 
-        userCrud = new UserCrudImplementation(getApplicationContext());
         try {
-            userCrud.insertUser(user);
+            userViewModel.insert(user);
         } catch (Exception e) {
             e.printStackTrace();
         }

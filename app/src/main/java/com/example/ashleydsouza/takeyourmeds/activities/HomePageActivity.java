@@ -22,6 +22,7 @@ import com.example.ashleydsouza.takeyourmeds.fragments.AddPrescription;
 import com.example.ashleydsouza.takeyourmeds.fragments.Settings;
 import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
 import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
 
 public class HomePageActivity extends AppCompatActivity
         implements  AddPrescription.OnFragmentInteractionListener,
@@ -32,19 +33,24 @@ public class HomePageActivity extends AppCompatActivity
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView navigationView;
+    private Session session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_page);
 
-        Intent intent = getIntent();
-        String email = intent.getStringExtra("email");
-        String name = intent.getStringExtra("name");
+        session = new Session(HomePageActivity.this);
+        String email = session.getEmail();
+        String name = session.getName();
+        int userId = session.getUserId();
+
+        System.out.println("Email = " + email + " Name = " + name + " UserId = " + userId);
 
         //set Home as default fragment
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
+        bundle.putInt("userId", userId);
         UserHome homeFragment = new UserHome();
         homeFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();

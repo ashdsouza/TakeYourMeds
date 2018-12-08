@@ -63,18 +63,19 @@ public class UserCrudImplementation {
     }
 
     public LiveData<List<Users>> getUser(String email, String password) {
-        final LiveData<List<Users>> users = appDb.userDao().getUsersWithCredentials(email, password);
+        return appDb.userDao().getUsersWithCredentials(email, password);
+//        final LiveData<List<Users>> users = appDb.userDao().getUsersWithCredentials(email, password);
+//
+//        mUsersLive.addSource(users, new Observer<List<Users>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Users> userList) {
+//                if(userList != null && !userList.isEmpty()) {
+//                    mUsersLive.removeSource(users);
+//                    mUsersLive.setValue(userList);
+//                }
+//            }
+//        });
 
-        mUsersLive.addSource(users, new Observer<List<Users>>() {
-            @Override
-            public void onChanged(@Nullable List<Users> userList) {
-                if(userList != null && !userList.isEmpty()) {
-                    mUsersLive.removeSource(users);
-                    mUsersLive.setValue(userList);
-                }
-            }
-        });
-
-        return mUsersLive;
+//        return mUsersLive;
     }
 }
