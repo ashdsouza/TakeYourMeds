@@ -1,5 +1,9 @@
-package com.example.ashleydsouza.takeyourmeds;
+package com.example.ashleydsouza.takeyourmeds.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,32 +14,57 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.TextView;
+
+import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.models.UserViewModel;
+import com.example.ashleydsouza.takeyourmeds.models.Users;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private EditText inputEmail, inputPassword;
     private TextInputLayout inputLayoutEmail, inputLayoutPassword;
-    private Button btnSignUp;
+    private TextView userCredsErr;
+    private Button btnLogin, btnSignup;
+    private String realName;
+    private UserViewModel userViewModel;
+    private Session session;
+    private Users userObj;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        session = new Session(this);
+
         inputLayoutEmail = findViewById(R.id.input_layout_email);
         inputLayoutPassword = findViewById(R.id.input_layout_password);
+        userCredsErr = findViewById(R.id.user_creds_err);
         inputEmail = findViewById(R.id.input_email);
         inputPassword = findViewById(R.id.input_password);
-        btnSignUp = findViewById(R.id.btn_login);
+        btnLogin = findViewById(R.id.btn_login);
+        btnSignup = findViewById(R.id.btn_signup);
 
         inputEmail.addTextChangedListener(new MyTextWatcher(inputEmail));
         inputPassword.addTextChangedListener(new MyTextWatcher(inputPassword));
 
-        btnSignUp.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 loginForm();
+            }
+        });
+
+        btnSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, Register.class);
+                startActivity(intent);
             }
         });
     }
@@ -50,10 +79,19 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(getApplicationContext(), "Thank You!", Toast.LENGTH_SHORT).show();
+        validateCredentials();
+
+        //No errors, set user session and open HomePage
+        if(userObj != null) {
+            session.storeUser(userObj);
+
+            Intent intent = new Intent(this, HomePageActivity.class);
+            startActivity(intent);
+        }
     }
 
     private boolean validateEmail() {
+
         String email = inputEmail.getText().toString().trim();
 
         if (email.isEmpty() || !isValidEmail(email)) {
@@ -77,6 +115,30 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
+    }
+
+    private void getRegisteredUser(String email, String password) {
+        userViewModel.getUserList(email, password).observe(this, new Observer<List<Users>>() {
+            @Override
+            public void onChanged(@Nullable List<Users> users) {
+                if(users != null && !users.isEmpty()) {
+                    realName = users.get(0).getName();
+                    userObj = users.get(0);
+                    userCredsErr.setVisibility(View.INVISIBLE);
+                } else {
+                    userCredsErr.setText(getString(R.string.err_user_not_registered));
+                    userCredsErr.setVisibility(View.VISIBLE);
+                    requestFocus(inputEmail);
+                }
+            }
+        });
+    }
+
+    private void validateCredentials() {
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+
+        getRegisteredUser(email, password);
     }
 
     private static boolean isValidEmail(String email) {

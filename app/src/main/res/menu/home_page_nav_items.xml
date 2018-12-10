@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/home_page"
+            android:checked="true"
+            android:icon="@drawable/ic_home"
+            android:title="@string/home_page" />
+        <item
+            android:id="@+id/add_prescription"
+            android:icon="@drawable/ic_prescription"
+            android:title="@string/homepg_nav_add_prescription" />
+        <item
+            android:id="@+id/show_calender"
+            android:icon="@drawable/ic_calendar"
+            android:title="@string/homepg_nav_show_calender"/>
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/homepg_nav_settings"/>
+    </group>
+</menu>

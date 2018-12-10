@@ -1,8 +1,49 @@
 <resources>
     <string name="app_name">TakeYourMeds</string>
+    <string name="optional">Optional Field</string>
+    <string name="save">Save</string>
+    <string name="sign_up">Sign Up</string>
+    <!-- Login Screen -->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
     <string name="login_btn">Login</string>
     <string name="err_msg_email">Enter valid email address</string>
     <string name="err_msg_pass">Enter password</string>
+    <string name="err_user_not_registered">User not registered</string>
+    <!-- Registration Page -->
+    <string name="user_name">Name</string>
+    <string name="user_email">Email</string>
+    <string name="user_password">Password</string>
+    <string name="err_msg_name">No Name entered</string>
+    <!-- Home Page -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="welcome_msg">Hi</string>
+    <string name="no_user_prescription">No Prescriptions Added</string>
+    <string name="home_page">Dashboard</string>
+    <string name="homepg_nav_add_prescription">Add Prescription</string>
+    <string name="homepg_nav_show_calender">Calender</string>
+    <string name="homepg_nav_settings">Settings</string>
+
+    <!-- Add Prescription Page -->
+    <string name="add_pres_title">Enter details for your medication as prescribed</string>
+    <string name="med_name">Medicine Name</string>
+    <string-array name="med_dosage">
+        <item>500mg</item>
+        <item>100mg</item>
+        <item>125mg</item>
+        <item>2000IU</item>
+    </string-array>
+    <string name="med_dosage_amount">Amount</string>
+    <string-array name="med_time">
+        <item>Daily</item>
+        <item>Weekly</item>
+        <item>Hourly</item>
+    </string-array>
+    <string name="med_addn_notes">Additional Notes</string>
+    <string name="med_dosage_helper">eg. 2 pills 240mg twice a day</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

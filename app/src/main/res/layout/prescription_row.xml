@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="10dp"
+    android:id="@+id/parent_row_linear_layout"
+    app:cardUseCompatPadding="false"
+    app:cardElevation="4dp"
+    app:cardCornerRadius="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout_inside_card"
+        android:orientation="vertical" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/med_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:hint="@string/med_name"
+                android:inputType="text"/>
+
+            <Spinner
+                android:id="@+id/med_dosage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_weight="3"
+                android:entries="@array/med_dosage"
+                android:gravity="end"
+                android:textAlignment="gravity" />
+        </LinearLayout>
+
+        <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/med_dosage_amount"
+                android:layout_width="0dp"
+                android:layout_weight="3"
+                android:layout_height="wrap_content"
+                android:hint="@string/med_dosage_amount"
+                android:inputType="number" />
+
+            <Spinner
+                android:id="@+id/med_time"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:layout_weight="3"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:entries="@array/med_time" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp"
+            xmlns:app="http://schemas.android.com/apk/res-auto">
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/med_notes"
+                android:layout_width="0dp"
+                android:layout_weight="5"
+                android:layout_height="wrap_content"
+                android:hint="@string/med_addn_notes"
+                android:inputType="textLongMessage"
+                app:met_helperText="@string/optional"
+                app:met_helperTextAlwaysShown="true"
+                app:met_textColorHint="#A4A4A4"
+                app:met_underlineColor="#7B7B7B"
+                app:met_helperTextColor="#000"
+                app:met_primaryColor="@color/colorAccent"
+                />
+
+            <Button
+                android:id="@+id/add_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@android:drawable/ic_input_add"
+                android:onClick="onAddMedicine"/>
+
+            <Button
+                android:id="@+id/delete_button"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="10dp"
+                android:background="@android:drawable/ic_delete"
+                android:onClick="onDeleteMedicine"/>
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
