@@ -95,23 +95,10 @@ public class UserHome extends Fragment {
         String name = session.getName();
         int userId = session.getUserId();
 
-        //Get email from Activity
-//        Bundle bundle = getArguments();
-//        String name = "";
-//        int userId = -1;
-//        if(bundle != null) {
-//            name = bundle.getString("name");
-//            userId = bundle.getInt("userId");
-//        }
-
-        System.out.println("UserId = " + userId);
+//        System.out.println("UserId = " + userId);
 
         String welcomeString = "Hi " + name + " !";
 
-//        Calendar nowCal = Calendar.getInstance();
-//        String prescriptionForToday = getPrescriptionsForToday(nowCal.getTime(), null);
-
-//        welcomeString = welcomeString + "\n" + prescriptionForToday;
         home.setText(welcomeString);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.prescriptions);

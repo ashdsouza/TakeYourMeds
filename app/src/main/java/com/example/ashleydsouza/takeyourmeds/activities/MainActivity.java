@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         validateCredentials();
 
         //No errors, set user session and open HomePage
-        if(userCredsErr.isShown()) {
+        if(userObj != null) {
             session.storeUser(userObj);
 
             Intent intent = new Intent(this, HomePageActivity.class);
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable List<Users> users) {
                 if(users != null && !users.isEmpty()) {
-//                    realName = users.get(0).getName();
+                    realName = users.get(0).getName();
                     userObj = users.get(0);
                     userCredsErr.setVisibility(View.INVISIBLE);
                 } else {

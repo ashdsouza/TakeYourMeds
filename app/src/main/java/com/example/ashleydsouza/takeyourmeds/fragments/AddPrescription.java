@@ -5,6 +5,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,6 +18,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.cruds.MedicineCrudImplementation;
@@ -116,9 +118,13 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         switch (id) {
             case R.id.save_action:
                 savePrescription();
-                break;
+                return true;
+//            default:
+
         }
+
         return super.onOptionsItemSelected(item); // important line
+
     }
 
     public void savePrescription() {
@@ -146,6 +152,11 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+
+//        UserHome homeFragment = new UserHome();
+//        getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
+//
+//        Toast.makeText(getActivity(), "Medicine Data Saved", Toast.LENGTH_SHORT).show();
     }
 
     private void saveInModel(LinearLayout layout) {
