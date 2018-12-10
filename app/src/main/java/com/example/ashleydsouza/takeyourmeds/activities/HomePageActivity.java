@@ -124,6 +124,10 @@ public class HomePageActivity extends AppCompatActivity
         });
     }
 
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
     /**
      * Sets the right fragment based on the user selection
      * @param menuItem

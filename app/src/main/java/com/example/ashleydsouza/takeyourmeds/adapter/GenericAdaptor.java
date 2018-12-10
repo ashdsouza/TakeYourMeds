@@ -46,6 +46,11 @@ public class GenericAdaptor extends RecyclerView.Adapter<GenericAdaptor.GenericH
         notifyDataSetChanged();         //not to be used
     }
 
+    //to get MedicineInformation at a position in the View; Used for swiping to delete medicine
+    public MedicineInformation getMedsAt(int position) {
+        return meds.get(position);
+    }
+
     //this will hold the views in our Recycler View
     class GenericHolder extends RecyclerView.ViewHolder {
         private TextView medName;

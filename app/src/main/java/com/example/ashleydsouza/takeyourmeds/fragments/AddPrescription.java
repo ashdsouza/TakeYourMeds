@@ -148,15 +148,14 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         if(medicines.size() > 0) {
             try {
                 medViewModel.insert(medicines);
+                UserHome homeFragment = new UserHome();
+                getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
+
+                Toast.makeText(getActivity(), "Medicine Data Saved", Toast.LENGTH_SHORT).show();
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
-
-//        UserHome homeFragment = new UserHome();
-//        getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
-//
-//        Toast.makeText(getActivity(), "Medicine Data Saved", Toast.LENGTH_SHORT).show();
     }
 
     private void saveInModel(LinearLayout layout) {
