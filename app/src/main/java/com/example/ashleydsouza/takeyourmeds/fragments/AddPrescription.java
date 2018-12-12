@@ -1,15 +1,25 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +42,7 @@ import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.TimeZone;
 
 
@@ -53,7 +64,9 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private String mParam1;
     private String mParam2;
 
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 99;
     private static final Integer RELEVANT_LINEAR_LAYOUTS = 3;
+    private static final String TAG = "AddPrescription";
     private OnFragmentInteractionListener mListener;
     private LinearLayout parentLinearLayout;
     private ArrayList<MedicineInformation> medicines;
@@ -235,12 +248,28 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     public void saveToCalender() {
         String prescription = prescriptionBuilder.toString();
 //        System.out.print(prescription);
-
+        if(!haveCalendarReadWritePermissions(getActivity())) {
+            requestReadWritePermission(getActivity());
+        }
         Calendar dt = Calendar.getInstance();
         long start = dt.getTimeInMillis();
 
         if(getContext() != null) {
+
             ContentResolver cntR = getContext().getContentResolver();
+
+            Cursor cursor = cntR.query(Uri.parse("content://com.android.calendar/calendars"),
+                            new String[] {"_id", "calendar_displayName"}, null, null, null);
+            cursor.moveToFirst();
+            String[] CalNames = new String[cursor.getCount()];
+            int[] CalIds = new int[cursor.getCount()];
+            for(int i=0; i<CalNames.length; i++) {
+                CalIds[i] = cursor.getInt(0);
+                CalNames[i] = cursor.getString(1);
+                cursor.moveToNext();
+            }
+            cursor.close();
+
             ContentValues values = new ContentValues();
             values.put(CalendarContract.Events.DTSTART, start);
             values.put(CalendarContract.Events.TITLE, "Prescription For Today");
@@ -248,21 +277,83 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
 
             TimeZone timeZone = TimeZone.getDefault();
             values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
-            values.put(CalendarContract.Events.CALENDAR_ID, 1);
-            values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;UNTIL=20181215");
+            if(CalIds.length > 0)
+                values.put(CalendarContract.Events.CALENDAR_ID, CalIds[0]);
+            else
+                values.put(CalendarContract.Events.CALENDAR_ID, 1);
+//            values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;UNTIL=20181215");
+            values.put(CalendarContract.Events.DURATION, "PT1D");
             values.put(CalendarContract.Events.HAS_ALARM, 1);
             values.put(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
 
             Uri uri = cntR.insert(CalendarContract.Events.CONTENT_URI, values);
-            long eventID = Long.parseLong(uri.getLastPathSegment());
+            Log.i(TAG, "Uri returned = " + uri.toString());
 
-            ContentValues reminders = new ContentValues();
-            reminders.put(CalendarContract.Reminders.EVENT_ID, eventID);
-            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
-            reminders.put(CalendarContract.Reminders.MINUTES, 10);
-
-            uri = cntR.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+            //TODO: Set Reminder for emulator
+//            long eventID = Long.parseLong(uri.getLastPathSegment());
+//
+//            ContentValues reminders = new ContentValues();
+//            reminders.put(CalendarContract.Reminders.EVENT_ID, eventID);
+//            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+//            reminders.put(CalendarContract.Reminders.MINUTES, 10);
+//
+//            Uri uri2 = cntR.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
         }
+    }
+
+    public void requestReadWritePermission(Activity activity) {
+        List<String> permissionList = new ArrayList<>();
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.WRITE_CALENDAR);
+        }
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(Manifest.permission.READ_CALENDAR);
+        }
+
+        if(permissionList.size() > 0) {
+            String[] permissions = new String[permissionList.size()];
+            for (int i=0;i<permissionList.size();i++) {
+                permissions[i] = permissionList.get(i);
+            }
+            ActivityCompat.requestPermissions(activity,permissions,MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+        }
+//            if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.WRITE_CALENDAR)) {
+//                AlertDialog.Builder alertBuilder = new AlertDialog.Builder(context);
+//                alertBuilder.setCancelable(true);
+//                alertBuilder.setMessage("Write calendar permission is necessary to write event");
+//                alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.WRITE_CALENDAR,Manifest.permission.READ_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+//                    }
+//                });
+//            } else {
+//                ActivityCompat.requestPermissions((Activity)context, new String[]{Manifest.permission.WRITE_CALENDAR,Manifest.permission.READ_CALENDAR}, MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+//            }
+//        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantedResults) {
+        if(requestCode == MY_PERMISSIONS_REQUEST_WRITE_CALENDAR) {
+            if(haveCalendarReadWritePermissions(getActivity())) {
+                Toast.makeText(getActivity(), "Have Calendar Read/Write Permission.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public static boolean haveCalendarReadWritePermissions(Activity caller) {
+        int permissionCheck = ContextCompat.checkSelfPermission(caller, Manifest.permission.READ_CALENDAR);
+
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            permissionCheck = ContextCompat.checkSelfPermission(caller, Manifest.permission.WRITE_CALENDAR);
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

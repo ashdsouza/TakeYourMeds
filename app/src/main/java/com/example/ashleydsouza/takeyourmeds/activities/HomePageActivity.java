@@ -174,6 +174,12 @@ public class HomePageActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantedResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantedResults);
+    }
+
     public void onFragmentInteraction(Uri uri) {
         //Do nothing
     }
