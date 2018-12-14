@@ -6,16 +6,21 @@
     android:paddingRight="16dp"
     tools:context=".fragments.ShowCalender">
 
-    <CalendarView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="#FFF"
-    android:layout_marginTop="20dp">
-    </CalendarView>
+    <!--<CalendarView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:background="#FFF"-->
+    <!--android:layout_marginTop="20dp">-->
+    <!--</CalendarView>-->
 
     <!--<com.applandeo.materialcalendarview.CalendarView-->
         <!--android:id="@+id/calenderView"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="match_parent" />-->
+
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        android:id="@+id/calenderView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </android.support.constraint.ConstraintLayout>

@@ -7,8 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+
+import java.util.Date;
 
 
 /**
@@ -66,7 +70,22 @@ public class ShowCalender extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_calender, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_show_calender, container, false);
+
+        final CompactCalendarView calender = rootView.findViewById(R.id.calenderView);
+        calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+                Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+
+            }
+        });
+
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
