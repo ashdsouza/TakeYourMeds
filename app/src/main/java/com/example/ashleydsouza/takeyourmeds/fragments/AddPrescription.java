@@ -35,6 +35,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.activities.HomePageActivity;
 import com.example.ashleydsouza.takeyourmeds.cruds.MedicineCrudImplementation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
@@ -180,7 +181,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
 
                 //check if the toggle is set to save as event in calender
                 if(true) {
-                    saveToCalender();
+                    mListener.saveToCalendar(medicines);
                 }
                 UserHome homeFragment = new UserHome();
                 getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
@@ -251,28 +252,28 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
                 medicine.getDosage() != null && medicine.getTime() != null;
     }
 
-    public void setEventDailyForAWeek(String eventString) {
-        Calendar now = Calendar.getInstance();
+//    public void setEventDailyForAWeek(String eventString) {
+//        Calendar now = Calendar.getInstance();
+//
+//        Calendar end = Calendar.getInstance();
+//        end.add(Calendar.DATE, 7);
+//
+//        for (Date dt = now.getTime(); !now.after(end);
+//             now.add(Calendar.DATE, 1), dt = now.getTime()) {
+//            Event event = new Event(Color.GREEN, dt.getTime(), eventString);
+//            calendar.addEvent(event);
+//        }
+//    }
 
-        Calendar end = Calendar.getInstance();
-        end.add(Calendar.DATE, 7);
-
-        for (Date dt = now.getTime(); !now.after(end);
-             now.add(Calendar.DATE, 1), dt = now.getTime()) {
-            Event event = new Event(Color.GREEN, dt.getTime(), eventString);
-            calendar.addEvent(event);
-        }
-    }
-
-    public void saveToCalender() {
-        for(int i=0; i< medicines.size(); i++) {
-            MedicineInformation med = medicines.get(i);
-            if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
-                String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
-                //set for a week
-                setEventDailyForAWeek(event);
-            }
-        }
+//    public void saveToCalender() {
+//        for(int i=0; i< medicines.size(); i++) {
+//            MedicineInformation med = medicines.get(i);
+//            if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
+//                String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
+//                //set for a week
+//                setEventDailyForAWeek(event);
+//            }
+//        }
 //        String prescription = prescriptionBuilder.toString();
 //        System.out.print(prescription);
 //        if(!haveCalendarReadWritePermissions(getActivity())) {
@@ -326,7 +327,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
 //
 //            Uri uri2 = cntR.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
 //        }
-    }
+//    }
 
 //    public void requestReadWritePermission(Activity activity) {
 //        List<String> permissionList = new ArrayList<>();
@@ -439,5 +440,6 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void saveToCalendar(List<MedicineInformation> medicines);
     }
 }

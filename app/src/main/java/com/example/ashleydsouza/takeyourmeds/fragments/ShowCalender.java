@@ -1,9 +1,11 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +13,9 @@ import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -73,9 +77,17 @@ public class ShowCalender extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_show_calender, container, false);
 
         final CompactCalendarView calender = rootView.findViewById(R.id.calenderView);
+
+//        Calendar cal = Calendar.getInstance();
+//        Log.d("Time", "Time for event = "  + cal.getTime().getTime());
+//        Event ev = new Event(Color.GREEN, cal.getTime().getTime(), "Test Event");
+//        calender.addEvent(ev);
+
         calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
+                Log.d("UserHome", "Data picked = " + dateClicked);
+                Log.d("UserHome", "Event Size = " + calender.getEvents(dateClicked).size());
                 Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
             }
 
