@@ -26,8 +26,8 @@ import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
 import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
+//import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+//import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -190,7 +190,7 @@ public class HomePageActivity extends AppCompatActivity
     }
 
     public void setEventDailyForAWeek(String eventString) {
-        CompactCalendarView calendar = new CompactCalendarView(this);
+//        CompactCalendarView calendar = new CompactCalendarView(this);
         Calendar now = Calendar.getInstance();
 
         Calendar end = Calendar.getInstance();
@@ -198,12 +198,12 @@ public class HomePageActivity extends AppCompatActivity
 
         for (Date dt = now.getTime(); !now.after(end);
              now.add(Calendar.DATE, 1), dt = now.getTime()) {
-            Event event = new Event(Color.GREEN, dt.getTime(), eventString);
-            calendar.addEvent(event);
+//            Event event = new Event(Color.GREEN, dt.getTime(), eventString);
+//            calendar.addEvent(event);
         }
 
         Calendar cal = Calendar.getInstance();
-        Log.d("Time", "Events added = "  + calendar.getEvents(cal.getTime().getTime()).size());
+//        Log.d("Time", "Events added = "  + calendar.getEvents(cal.getTime().getTime()).size());
     }
 
     @Override

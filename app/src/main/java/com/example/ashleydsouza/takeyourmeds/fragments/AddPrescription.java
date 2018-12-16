@@ -40,8 +40,8 @@ import com.example.ashleydsouza.takeyourmeds.cruds.MedicineCrudImplementation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
+//import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+//import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -80,7 +80,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private Session session;
     private int userId;
     private StringBuffer prescriptionBuilder;
-    private CompactCalendarView calendar;
+//    private CompactCalendarView calendar;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -115,7 +115,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
         session = new Session(getActivity());
         userId = session.getUserId();
-        calendar = new CompactCalendarView(getContext());
+//        calendar = new CompactCalendarView(getContext());
 
         setHasOptionsMenu(true);
     }
