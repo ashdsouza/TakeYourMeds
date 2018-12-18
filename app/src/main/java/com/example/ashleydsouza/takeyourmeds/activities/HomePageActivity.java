@@ -25,6 +25,7 @@ import com.example.ashleydsouza.takeyourmeds.fragments.Settings;
 import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
 import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -43,6 +44,7 @@ public class HomePageActivity extends AppCompatActivity
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView navigationView;
     private Session session;
+    private CalendarEventManager instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,31 +191,29 @@ public class HomePageActivity extends AppCompatActivity
         //Do nothing
     }
 
-    public void setEventDailyForAWeek(String eventString) {
-        CompactCalendarView calendar = new CompactCalendarView(this);
+    public void setEventDailyForAMonth(String eventString) {
         Calendar now = Calendar.getInstance();
 
         Calendar end = Calendar.getInstance();
-        end.add(Calendar.DATE, 7);
+        end.add(Calendar.MONTH, 1);
 
         for (Date dt = now.getTime(); !now.after(end);
              now.add(Calendar.DATE, 1), dt = now.getTime()) {
             Event event = new Event(Color.GREEN, dt.getTime(), eventString);
-            calendar.addEvent(event);
+            instance.saveEvents(event);
         }
-
-        Calendar cal = Calendar.getInstance();
-        Log.d("Time", "Events added = "  + calendar.getEvents(cal.getTime().getTime()).size());
     }
 
     @Override
     public void saveToCalendar(List<MedicineInformation> meds) {
+        instance = CalendarEventManager.getInstance();
+
         for(int i=0; i< meds.size(); i++) {
             MedicineInformation med = meds.get(i);
             if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
                 String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
-                //set for a week
-                setEventDailyForAWeek(event);
+                //set for a month by default
+                setEventDailyForAMonth(event);
             }
         }
 

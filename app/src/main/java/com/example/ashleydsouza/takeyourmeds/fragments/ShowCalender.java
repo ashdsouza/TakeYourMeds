@@ -12,11 +12,13 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -38,6 +40,7 @@ public class ShowCalender extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private CompactCalendarView calender;
 
     public ShowCalender() {
         // Required empty public constructor
@@ -76,18 +79,14 @@ public class ShowCalender extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_show_calender, container, false);
 
-        final CompactCalendarView calender = rootView.findViewById(R.id.calenderView);
-
-//        Calendar cal = Calendar.getInstance();
-//        Log.d("Time", "Time for event = "  + cal.getTime().getTime());
-//        Event ev = new Event(Color.GREEN, cal.getTime().getTime(), "Test Event");
-//        calender.addEvent(ev);
+        calender = rootView.findViewById(R.id.calenderView);
+        createCalendarEvent();
 
         calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                Log.d("UserHome", "Data picked = " + dateClicked);
-                Log.d("UserHome", "Event Size = " + calender.getEvents(dateClicked).size());
+                Log.d("ShowCalender", "Data picked = " + dateClicked);
+                Log.d("ShowCalender", "Event Size = " + calender.getEvents(dateClicked).size());
                 Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
             }
 
@@ -98,6 +97,14 @@ public class ShowCalender extends Fragment {
         });
 
         return rootView;
+    }
+
+    public void createCalendarEvent() {
+        List<Event> events = CalendarEventManager.getInstance().getCalendarEvents();
+
+        for(int i = 0; i < events.size(); i++) {
+            calender.addEvent(events.get(i));
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
