@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +18,12 @@ import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -92,8 +99,6 @@ public class ShowCalender extends Fragment {
         calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                Log.d("ShowCalender", "Data picked = " + dateClicked);
-                Log.d("ShowCalender", "Event Size = " + calender.getEvents(dateClicked).size());
                 Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
             }
 
@@ -106,16 +111,30 @@ public class ShowCalender extends Fragment {
         return rootView;
     }
 
+    /**
+     * Function to fetch events from Firebase and set as Calendar Events
+     */
     public void createCalendarEvent() {
-        List<CalendarEvent> calEvents = CalendarEventManager.getInstance().getCalendarEvents(userId);
-
-        if(calEvents.size() > 0) {
-            for (int i = 0; i < calEvents.size(); i++) {
-                Event event = new Event(calEvents.get(i).getColor(),
-                        calEvents.get(i).getTimeInMillis(), calEvents.get(i).getData());
-                calender.addEvent(event);
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("user-events");
+        Query q = dbRef.child(String.valueOf(userId));
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnap: dataSnapshot.getChildren()) {
+                    CalendarEvent calEvent = dataSnap.getValue(CalendarEvent.class);
+                    if(calEvent != null) {
+                        Event event = new Event(calEvent.getEventColor(),
+                                calEvent.getTimeEventAdded(), calEvent.getDescription());
+                        calender.addEvent(event);
+                    }
+                }
             }
-        }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

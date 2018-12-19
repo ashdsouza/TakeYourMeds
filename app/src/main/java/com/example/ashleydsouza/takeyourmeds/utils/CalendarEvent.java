@@ -6,27 +6,29 @@ import java.util.Map;
 
 public class CalendarEvent {
     private Integer userId;
-    private Integer color;
-    private Long timeInMillis;
-    private Object data;
+    private Integer eventColor;
+    private Long timeEventAdded;
+    private Object description;
 
-    public CalendarEvent(Integer userId, Integer color, Long timeInMillis, Object data) {
+    public CalendarEvent() {}
+
+    public CalendarEvent(Integer userId, Integer eventColor, Long timeEventAdded, Object description) {
         this.userId = userId;
-        this.color = color;
-        this.timeInMillis = timeInMillis;
-        this.data = data;
+        this.eventColor = eventColor;
+        this.timeEventAdded = timeEventAdded;
+        this.description = description;
     }
 
-    public Integer getColor() {
-        return color;
+    public Integer getEventColor() {
+        return eventColor;
     }
 
-    public Long getTimeInMillis() {
-        return timeInMillis;
+    public Long getTimeEventAdded() {
+        return timeEventAdded;
     }
 
-    public Object getData() {
-        return data;
+    public Object getDescription() {
+        return description;
     }
 
     public Integer getUserId() {
@@ -37,24 +39,24 @@ public class CalendarEvent {
         this.userId = userId;
     }
 
-    public void setColor(Integer color) {
-        this.color = color;
+    public void setEventColor(Integer eventColor) {
+        this.eventColor = eventColor;
     }
 
-    public void setTimeInMillis(Long timeInMillis) {
-        this.timeInMillis = timeInMillis;
+    public void setTimeEventAdded(Long timeEventAdded) {
+        this.timeEventAdded = timeEventAdded;
     }
 
-    public void setData(Object data) {
-        this.data = data;
+    public void setDescription(Object description) {
+        this.description = description;
     }
 
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("userId", userId);
-        result.put("eventColor", color);
-        result.put("timeEventAdded", timeInMillis);
-        result.put("description", data);
+        result.put("eventColor", eventColor);
+        result.put("timeEventAdded", timeEventAdded);
+        result.put("description", description);
 
         return result;
     }

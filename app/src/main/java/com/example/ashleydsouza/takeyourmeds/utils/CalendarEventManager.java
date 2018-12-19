@@ -20,7 +20,6 @@ import java.util.Map;
 
 public class CalendarEventManager {
 
-    private List<CalendarEvent> calendarEvents;
     private static DatabaseReference mDatabase;
     private static CalendarEventManager instance;
     private static final String EVENTS = "/events/";
@@ -34,37 +33,8 @@ public class CalendarEventManager {
         return instance;
     }
 
-    public List<CalendarEvent> getCalendarEvents(int userId) {
-        //Add your implementation here to get events from local database if needed
-        Query q = mDatabase.child("user-events").child(String.valueOf(userId));
-        q.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for(DataSnapshot dataSnap: dataSnapshot.getChildren()) {
-                    CalendarEvent event = dataSnap.getValue(CalendarEvent.class);
-                    calendarEvents.add(event);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        if(calendarEvents == null) {
-            calendarEvents = new ArrayList<>();
-        }
-        return calendarEvents;
-    }
-
     public void saveEvents(CalendarEvent event) {
-//        if(calendarEvents == null) {
-//            calendarEvents = new ArrayList<>();
-//        }
-//        calendarEvents.add(event);
-
-        //Add your implementation here to save an event into your local database events
+        //Firebase Implementation here to save an event into Database
         // Create new post at /user-events/$userid/$eventid and at
         // /events/$eventid simultaneously
         String eventKey = mDatabase.child("events").push().getKey();
