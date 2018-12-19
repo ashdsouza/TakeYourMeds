@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.adapter.CalendarEventAdaptor;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
@@ -96,10 +99,18 @@ public class ShowCalender extends Fragment {
         calender = rootView.findViewById(R.id.calenderView);
         createCalendarEvent();
 
+        RecyclerView recyclerView = rootView.findViewById(R.id.calendar_events);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+
+        final CalendarEventAdaptor adapter = new CalendarEventAdaptor();
+        recyclerView.setAdapter(adapter);
+
         calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
+                adapter.setEvents(calender.getEvents(dateClicked));
             }
 
             @Override

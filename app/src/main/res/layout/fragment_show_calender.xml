@@ -1,4 +1,4 @@
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,19 +6,8 @@
     android:paddingRight="16dp"
     android:paddingTop="20dp"
     android:background="#769fcd"
+    android:orientation="vertical"
     tools:context=".fragments.ShowCalender">
-
-    <!--<CalendarView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:background="#FFF"-->
-    <!--android:layout_marginTop="20dp">-->
-    <!--</CalendarView>-->
-
-    <!--<com.applandeo.materialcalendarview.CalendarView-->
-        <!--android:id="@+id/calenderView"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent" />-->
 
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -35,6 +24,10 @@
         app:compactCalendarCurrentDayBackgroundColor="#c4eada"
         app:compactCalendarMultiEventIndicatorColor="#fff"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/calendar_events"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:listitem="@layout/calendar_events_view"/>
 
-
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
