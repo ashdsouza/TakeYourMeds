@@ -29,6 +29,8 @@
     <!-- Add Prescription Page -->
     <string name="add_pres_title">Enter details for your medication as prescribed</string>
     <string name="med_name">Medicine Name</string>
+    <string name="med_dosage">Dosage</string>
+    <string name="med_time">Time</string>
     <string-array name="med_dosage">
         <item>500mg</item>
         <item>100mg</item>
@@ -43,6 +45,9 @@
     </string-array>
     <string name="med_addn_notes">Additional Notes</string>
     <string name="med_dosage_helper">eg. 2 pills 240mg twice a day</string>
+
+    <!-- Calendar Event Page -->
+    <string name="event_desc">Event Description</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

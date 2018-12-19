@@ -2,6 +2,7 @@ package com.example.ashleydsouza.takeyourmeds.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -13,6 +14,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -22,7 +24,16 @@ import com.example.ashleydsouza.takeyourmeds.fragments.AddPrescription;
 import com.example.ashleydsouza.takeyourmeds.fragments.Settings;
 import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
 import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class HomePageActivity extends AppCompatActivity
         implements  AddPrescription.OnFragmentInteractionListener,
@@ -34,6 +45,7 @@ public class HomePageActivity extends AppCompatActivity
     private ActionBarDrawerToggle mActionBarDrawerToggle;
     private NavigationView navigationView;
     private Session session;
+    private CalendarEventManager instance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +57,10 @@ public class HomePageActivity extends AppCompatActivity
         String name = session.getName();
         int userId = session.getUserId();
 
-        System.out.println("Email = " + email + " Name = " + name + " UserId = " + userId);
+        Log.d("HomePageActivity", "Email = " + email + " Name = " + name + " UserId = " + userId);
 
         //set Home as default fragment
-        Bundle bundle = new Bundle();
-        bundle.putString("name", name);
-        bundle.putInt("userId", userId);
         UserHome homeFragment = new UserHome();
-        homeFragment.setArguments(bundle);
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, homeFragment).commit();
 
@@ -174,7 +182,43 @@ public class HomePageActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantedResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantedResults);
+    }
+
     public void onFragmentInteraction(Uri uri) {
         //Do nothing
+    }
+
+    public void setEventDailyForAMonth(int userId, String eventString) {
+        Calendar now = Calendar.getInstance();
+
+        Calendar end = Calendar.getInstance();
+        end.add(Calendar.MONTH, 1);
+
+        for (Date dt = now.getTime(); !now.after(end);
+             now.add(Calendar.DATE, 1), dt = now.getTime()) {
+            CalendarEvent event = new CalendarEvent(userId, Color.GREEN, dt.getTime(), eventString);
+            //Event event = new Event(Color.GREEN, dt.getTime(), eventString);
+            instance.saveEvents(event);
+        }
+    }
+
+    @Override
+    public void saveToCalendar(List<MedicineInformation> meds) {
+        instance = CalendarEventManager.getInstance();
+
+        for(int i=0; i< meds.size(); i++) {
+            MedicineInformation med = meds.get(i);
+            if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
+                String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
+                //set for a month by default
+                setEventDailyForAMonth(med.getUserId(), event);
+            }
+        }
+
+
     }
 }

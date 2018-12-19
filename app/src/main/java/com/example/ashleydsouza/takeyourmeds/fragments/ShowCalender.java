@@ -1,14 +1,36 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.adapter.CalendarEventAdaptor;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -30,6 +52,9 @@ public class ShowCalender extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private CompactCalendarView calender;
+    private Session session;
+    private int userId;
 
     public ShowCalender() {
         // Required empty public constructor
@@ -60,13 +85,67 @@ public class ShowCalender extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        session = new Session(getActivity());
+        userId = session.getUserId();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_show_calender, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_show_calender, container, false);
+
+        calender = rootView.findViewById(R.id.calenderView);
+        createCalendarEvent();
+
+        RecyclerView recyclerView = rootView.findViewById(R.id.calendar_events);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setHasFixedSize(true);
+
+        final CalendarEventAdaptor adapter = new CalendarEventAdaptor();
+        recyclerView.setAdapter(adapter);
+
+        calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+//                Toast.makeText(getActivity(), "Event = " + calender.getEvents(dateClicked), Toast.LENGTH_SHORT).show();
+                adapter.setEvents(calender.getEvents(dateClicked));
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+
+            }
+        });
+
+        return rootView;
+    }
+
+    /**
+     * Function to fetch events from Firebase and set as Calendar Events
+     */
+    public void createCalendarEvent() {
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("user-events");
+        Query q = dbRef.child(String.valueOf(userId));
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnap: dataSnapshot.getChildren()) {
+                    CalendarEvent calEvent = dataSnap.getValue(CalendarEvent.class);
+                    if(calEvent != null) {
+                        Event event = new Event(calEvent.getEventColor(),
+                                calEvent.getTimeEventAdded(), calEvent.getDescription());
+                        calender.addEvent(event);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event

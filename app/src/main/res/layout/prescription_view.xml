@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:text="Medicine Name"/>
+            android:text="@string/med_name"/>
 
         <TextView
             android:id="@+id/med_dosage"
@@ -31,7 +31,7 @@
             android:layout_marginStart="20dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:text="Dosage"/>
+            android:text="@string/med_dosage"/>
 
         <TextView
             android:id="@+id/med_dosage_amount"
@@ -43,7 +43,7 @@
             android:layout_marginLeft="20dp"
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
-            android:text="Amount"/>
+            android:text="@string/med_dosage_amount"/>
 
         <TextView
             android:id="@+id/med_time"
@@ -57,7 +57,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginStart="10dp"
             android:layout_toRightOf="@id/med_dosage_amount"
-            android:text="Time"/>
+            android:text="@string/med_time"/>
 
         <TextView
             android:id="@+id/med_notes"
@@ -67,6 +67,6 @@
             android:layout_marginTop="10dp"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
-            android:text="Additional Notes"/>
+            android:text="@string/med_addn_notes"/>
     </RelativeLayout>
 </android.support.v7.widget.CardView>

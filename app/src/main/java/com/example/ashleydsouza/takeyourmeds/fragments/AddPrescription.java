@@ -1,12 +1,26 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
+import android.Manifest;
+import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,12 +35,20 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.activities.HomePageActivity;
 import com.example.ashleydsouza.takeyourmeds.cruds.MedicineCrudImplementation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.TimeZone;
 
 
 /**
@@ -47,7 +69,9 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private String mParam1;
     private String mParam2;
 
+    public static final int MY_PERMISSIONS_REQUEST_WRITE_CALENDAR = 99;
     private static final Integer RELEVANT_LINEAR_LAYOUTS = 3;
+    private static final String TAG = "AddPrescription";
     private OnFragmentInteractionListener mListener;
     private LinearLayout parentLinearLayout;
     private ArrayList<MedicineInformation> medicines;
@@ -55,6 +79,8 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private Context context;
     private Session session;
     private int userId;
+    private StringBuffer prescriptionBuilder;
+    private CompactCalendarView calendar;
 
     public AddPrescription() {
         // Required empty public constructor
@@ -89,6 +115,7 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
         session = new Session(getActivity());
         userId = session.getUserId();
+        calendar = new CompactCalendarView(getContext());
 
         setHasOptionsMenu(true);
     }
@@ -102,6 +129,10 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         parentLinearLayout = rootView.findViewById(R.id.parent_linear_layout);
         Button addButton = rootView.findViewById(R.id.add_button);
         addButton.setOnClickListener(this);
+
+        //String for Calender event
+        prescriptionBuilder = new StringBuffer();
+        prescriptionBuilder.append("Medicine_Name\tDosage\tAmount\tTime\tAdditional_Notes\n");
 
         return rootView;
     }
@@ -143,11 +174,15 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             }
         }
 
-        System.out.println(medicines.size());
         //check if you have medicine data to add
         if(medicines.size() > 0) {
             try {
                 medViewModel.insert(medicines);
+
+                //check if the toggle is set to save as event in calender
+                if(true) {
+                    mListener.saveToCalendar(medicines);
+                }
                 UserHome homeFragment = new UserHome();
                 getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
 
@@ -168,42 +203,171 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
                 switch (elem.getId()) {
                     case R.id.med_name:
                         EditText name = (EditText) elem;
-                        if(!name.getText().toString().equals(""))
+                        if(!name.getText().toString().equals("")) {
                             medicine.setName(name.getText().toString());
-                        break;
-                    case R.id.med_dosage_amount:
-                        EditText amount = (EditText) elem;
-                        if(!amount.getText().toString().equals(""))
-                            medicine.setAmount(Integer.valueOf(amount.getText().toString()));
+                            prescriptionBuilder.append(name.getText().toString() + "\t");
+                        }
                         break;
                     case R.id.med_dosage:
                         Spinner dosage = (Spinner) elem;
-                        if(dosage.getSelectedItem() != null)
+                        if(dosage.getSelectedItem() != null) {
                             medicine.setDosage(dosage.getSelectedItem().toString());
+                            prescriptionBuilder.append(dosage.getSelectedItem().toString() + "\t");
+                        }
+                        break;
+                    case R.id.med_dosage_amount:
+                        EditText amount = (EditText) elem;
+                        if(!amount.getText().toString().equals("")) {
+                            medicine.setAmount(Integer.valueOf(amount.getText().toString()));
+                            prescriptionBuilder.append(amount.getText().toString() + "\t");
+                        }
                         break;
                     case R.id.med_time:
                         Spinner time = (Spinner) elem;
-                        if(time.getSelectedItem() != null)
+                        if(time.getSelectedItem() != null) {
                             medicine.setTime(time.getSelectedItem().toString());
+                            prescriptionBuilder.append(time.getSelectedItem().toString() + "\t");
+                        }
                         break;
                     case R.id.med_notes:
                         EditText notes = (EditText) elem;
-                        if(!notes.getText().toString().equals(""))
+                        if(!notes.getText().toString().equals("")) {
                             medicine.setAdditionalNotes(notes.getText().toString());
+                            prescriptionBuilder.append(notes.getText().toString());
+                        }
                         break;
                 }
             }
         }
-        medicine.printMedicine();
+//        medicine.printMedicine();
         if(isMedicineEntered(medicine)) {
             medicine.setUserId(userId);
             medicines.add(medicine);
+            prescriptionBuilder.append("\n");
         }
     }
 
     public boolean isMedicineEntered(MedicineInformation medicine) {
         return medicine.getName() != null && medicine.getAmount() != null &&
                 medicine.getDosage() != null && medicine.getTime() != null;
+    }
+
+//    public void setEventDailyForAWeek(String eventString) {
+//        Calendar now = Calendar.getInstance();
+//
+//        Calendar end = Calendar.getInstance();
+//        end.add(Calendar.DATE, 7);
+//
+//        for (Date dt = now.getTime(); !now.after(end);
+//             now.add(Calendar.DATE, 1), dt = now.getTime()) {
+//            Event event = new Event(Color.GREEN, dt.getTime(), eventString);
+//            calendar.addEvent(event);
+//        }
+//    }
+
+//    public void saveToCalender() {
+//        for(int i=0; i< medicines.size(); i++) {
+//            MedicineInformation med = medicines.get(i);
+//            if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
+//                String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
+//                //set for a week
+//                setEventDailyForAWeek(event);
+//            }
+//        }
+//        String prescription = prescriptionBuilder.toString();
+//        System.out.print(prescription);
+//        if(!haveCalendarReadWritePermissions(getActivity())) {
+//            requestReadWritePermission(getActivity());
+//        }
+//        Calendar dt = Calendar.getInstance();
+//        long start = dt.getTimeInMillis();
+//
+//        if(getContext() != null) {
+//
+//            ContentResolver cntR = getContext().getContentResolver();
+//
+//            Cursor cursor = cntR.query(Uri.parse("content://com.android.calendar/calendars"),
+//                            new String[] {"_id", "calendar_displayName"}, null, null, null);
+//            cursor.moveToFirst();
+//            String[] CalNames = new String[cursor.getCount()];
+//            int[] CalIds = new int[cursor.getCount()];
+//            for(int i=0; i<CalNames.length; i++) {
+//                CalIds[i] = cursor.getInt(0);
+//                CalNames[i] = cursor.getString(1);
+//                cursor.moveToNext();
+//            }
+//            cursor.close();
+//
+//            ContentValues values = new ContentValues();
+//            values.put(CalendarContract.Events.DTSTART, start);
+//            values.put(CalendarContract.Events.TITLE, "Prescription For Today");
+//            values.put(CalendarContract.Events.DESCRIPTION, prescription);
+//
+//            TimeZone timeZone = TimeZone.getDefault();
+//            values.put(CalendarContract.Events.EVENT_TIMEZONE, timeZone.getID());
+//            if(CalIds.length > 0)
+//                values.put(CalendarContract.Events.CALENDAR_ID, CalIds[0]);
+//            else
+//                values.put(CalendarContract.Events.CALENDAR_ID, 1);
+////            values.put(CalendarContract.Events.RRULE, "FREQ=DAILY;UNTIL=20181215");
+//            values.put(CalendarContract.Events.DURATION, "PT1D");
+//            values.put(CalendarContract.Events.HAS_ALARM, 1);
+//            values.put(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_FREE);
+//
+//            Uri uri = cntR.insert(CalendarContract.Events.CONTENT_URI, values);
+//            Log.i(TAG, "Uri returned = " + uri.toString());
+
+            //TODO: Set Reminder for emulator
+//            long eventID = Long.parseLong(uri.getLastPathSegment());
+//
+//            ContentValues reminders = new ContentValues();
+//            reminders.put(CalendarContract.Reminders.EVENT_ID, eventID);
+//            reminders.put(CalendarContract.Reminders.METHOD, CalendarContract.Reminders.METHOD_ALERT);
+//            reminders.put(CalendarContract.Reminders.MINUTES, 10);
+//
+//            Uri uri2 = cntR.insert(CalendarContract.Reminders.CONTENT_URI, reminders);
+//        }
+//    }
+
+//    public void requestReadWritePermission(Activity activity) {
+//        List<String> permissionList = new ArrayList<>();
+//
+//        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+//            permissionList.add(Manifest.permission.WRITE_CALENDAR);
+//        }
+//
+//        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_CALENDAR) != PackageManager.PERMISSION_GRANTED) {
+//            permissionList.add(Manifest.permission.READ_CALENDAR);
+//        }
+//
+//        if(permissionList.size() > 0) {
+//            String[] permissions = new String[permissionList.size()];
+//            for (int i=0;i<permissionList.size();i++) {
+//                permissions[i] = permissionList.get(i);
+//            }
+//            ActivityCompat.requestPermissions(activity,permissions,MY_PERMISSIONS_REQUEST_WRITE_CALENDAR);
+//        }
+//    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantedResults) {
+        if(requestCode == MY_PERMISSIONS_REQUEST_WRITE_CALENDAR) {
+            if(haveCalendarReadWritePermissions(getActivity())) {
+                Toast.makeText(getActivity(), "Have Calendar Read/Write Permission.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    public static boolean haveCalendarReadWritePermissions(Activity caller) {
+        int permissionCheck = ContextCompat.checkSelfPermission(caller, Manifest.permission.READ_CALENDAR);
+
+        if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+            permissionCheck = ContextCompat.checkSelfPermission(caller, Manifest.permission.WRITE_CALENDAR);
+            if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
@@ -276,5 +440,6 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+        void saveToCalendar(List<MedicineInformation> medicines);
     }
 }
