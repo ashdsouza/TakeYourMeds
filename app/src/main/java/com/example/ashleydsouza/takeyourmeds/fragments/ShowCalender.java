@@ -12,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.github.sundeepk.compactcalendarview.domain.Event;
 
@@ -41,6 +43,8 @@ public class ShowCalender extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private CompactCalendarView calender;
+    private Session session;
+    private int userId;
 
     public ShowCalender() {
         // Required empty public constructor
@@ -71,6 +75,9 @@ public class ShowCalender extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        session = new Session(getActivity());
+        userId = session.getUserId();
     }
 
     @Override
@@ -100,10 +107,14 @@ public class ShowCalender extends Fragment {
     }
 
     public void createCalendarEvent() {
-        List<Event> events = CalendarEventManager.getInstance().getCalendarEvents();
+        List<CalendarEvent> calEvents = CalendarEventManager.getInstance().getCalendarEvents(userId);
 
-        for(int i = 0; i < events.size(); i++) {
-            calender.addEvent(events.get(i));
+        if(calEvents.size() > 0) {
+            for (int i = 0; i < calEvents.size(); i++) {
+                Event event = new Event(calEvents.get(i).getColor(),
+                        calEvents.get(i).getTimeInMillis(), calEvents.get(i).getData());
+                calender.addEvent(event);
+            }
         }
     }
 

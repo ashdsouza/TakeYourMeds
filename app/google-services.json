@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "206106597959",
+    "firebase_url": "https://takeyourmeds-d2f46.firebaseio.com",
+    "project_id": "takeyourmeds-d2f46",
+    "storage_bucket": "takeyourmeds-d2f46.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:206106597959:android:550ac7237e707dab",
+        "android_client_info": {
+          "package_name": "com.example.ashleydsouza.takeyourmeds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "206106597959-kdk7ue0i33gcqe74tu9fvjkcqmsqufdk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ashleydsouza.takeyourmeds",
+            "certificate_hash": "ce787f0eba29057da910139706ae2418e955ef4b"
+          }
+        },
+        {
+          "client_id": "206106597959-4dtav7l220htalpcan3b9ch7b6nghi4v.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5iViDYwrgWajfffPAGTg-ykGMZYLU34Y"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "206106597959-drg06ad40n7k9jscn7mk9dghfcqhlbd8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

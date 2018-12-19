@@ -25,6 +25,7 @@ import com.example.ashleydsouza.takeyourmeds.fragments.Settings;
 import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
 import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
@@ -191,7 +192,7 @@ public class HomePageActivity extends AppCompatActivity
         //Do nothing
     }
 
-    public void setEventDailyForAMonth(String eventString) {
+    public void setEventDailyForAMonth(int userId, String eventString) {
         Calendar now = Calendar.getInstance();
 
         Calendar end = Calendar.getInstance();
@@ -199,7 +200,8 @@ public class HomePageActivity extends AppCompatActivity
 
         for (Date dt = now.getTime(); !now.after(end);
              now.add(Calendar.DATE, 1), dt = now.getTime()) {
-            Event event = new Event(Color.GREEN, dt.getTime(), eventString);
+            CalendarEvent event = new CalendarEvent(userId, Color.GREEN, dt.getTime(), eventString);
+            //Event event = new Event(Color.GREEN, dt.getTime(), eventString);
             instance.saveEvents(event);
         }
     }
@@ -213,7 +215,7 @@ public class HomePageActivity extends AppCompatActivity
             if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
                 String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
                 //set for a month by default
-                setEventDailyForAMonth(event);
+                setEventDailyForAMonth(med.getUserId(), event);
             }
         }
 
