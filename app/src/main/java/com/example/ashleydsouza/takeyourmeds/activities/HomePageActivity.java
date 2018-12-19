@@ -1,6 +1,5 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -28,8 +27,6 @@ import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -71,8 +68,10 @@ public class HomePageActivity extends AppCompatActivity
         //email for the Navigation Tab under the Icon and App Name
         navigationView = findViewById(R.id.navigation_drawer);
         View headerView = navigationView.getHeaderView(0);
-        TextView navUsername = headerView.findViewById(R.id.user_email);
-        navUsername.setText(email);
+        TextView navUserEmail = headerView.findViewById(R.id.user_email);
+        navUserEmail.setText(email);
+        TextView navUsername = headerView.findViewById(R.id.user_name);
+        navUsername.setText(name);
 
 
         //Animation for the Hamburger icon to make sure it is clicked during navigation
@@ -201,7 +200,6 @@ public class HomePageActivity extends AppCompatActivity
         for (Date dt = now.getTime(); !now.after(end);
              now.add(Calendar.DATE, 1), dt = now.getTime()) {
             CalendarEvent event = new CalendarEvent(userId, Color.GREEN, dt.getTime(), eventString);
-            //Event event = new Event(Color.GREEN, dt.getTime(), eventString);
             instance.saveEvents(event);
         }
     }
