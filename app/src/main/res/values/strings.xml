@@ -27,7 +27,7 @@
     <string name="homepg_nav_settings">Settings</string>
 
     <!-- Add Prescription Page -->
-    <string name="add_pres_title">Enter details for your medication as prescribed</string>
+    <string name="add_pres_title">Enter Medicine Details</string>
     <string name="med_name">Medicine Name</string>
     <string name="med_dosage">Dosage</string>
     <string name="med_time">Time</string>

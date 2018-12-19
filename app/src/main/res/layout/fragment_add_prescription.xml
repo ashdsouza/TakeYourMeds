@@ -3,30 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="#CFD8DC"
     tools:context=".fragments.AddPrescription">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:textSize="15sp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:textColor="#000"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
         android:text="@string/add_pres_title" />
 
     <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         app:cardUseCompatPadding="true"
         app:cardElevation="4dp"
         app:cardCornerRadius="3dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:id="@+id/parent_linear_layout"
             android:orientation="vertical" >
 

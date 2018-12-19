@@ -1,6 +1,5 @@
 package com.example.ashleydsouza.takeyourmeds.adapter;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
-import com.example.ashleydsouza.takeyourmeds.models.Users;
 
 import java.util.ArrayList;
 import java.util.List;

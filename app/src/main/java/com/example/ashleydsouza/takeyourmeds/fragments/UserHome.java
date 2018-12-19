@@ -1,9 +1,5 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
-import android.arch.lifecycle.GeneratedAdapter;
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.MethodCallsLogger;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -28,7 +24,6 @@ import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
 
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -98,10 +93,7 @@ public class UserHome extends Fragment {
         String name = session.getName();
         int userId = session.getUserId();
 
-//        System.out.println("UserId = " + userId);
-
         String welcomeString = "Hi " + name + " !";
-
         home.setText(welcomeString);
 
         RecyclerView recyclerView = rootView.findViewById(R.id.prescriptions);
@@ -133,24 +125,6 @@ public class UserHome extends Fragment {
         }).attachToRecyclerView(recyclerView);
 
         return rootView;
-    }
-
-    public String getPrescriptionsForToday(Date date, String userEmail) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy");
-        String loginDate = dateFormat.format(date);
-
-        /**
-         Get list of prescription based on date and userEmail
-         set this to true when call is made to DB and there are results
-         **/
-        boolean hasPrescription = false;
-        String listOfPrescription = "For " + loginDate + "\n";
-        if(hasPrescription) {
-            listOfPrescription += "";
-        } else {
-            listOfPrescription += getString(R.string.no_user_prescription);
-        }
-        return listOfPrescription;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

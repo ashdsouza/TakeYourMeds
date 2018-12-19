@@ -3,11 +3,9 @@ package com.example.ashleydsouza.takeyourmeds.models;
 import android.app.Application;
 import android.arch.lifecycle.AndroidViewModel;
 import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.MutableLiveData;
 import android.support.annotation.NonNull;
 
 import com.example.ashleydsouza.takeyourmeds.cruds.UserCrudImplementation;
-import com.example.ashleydsouza.takeyourmeds.database.AppDatabase;
 
 import java.util.List;
 

@@ -30,17 +30,6 @@ public class MedicineInformation {
 
     }
 
-//    public MedicineInformation(String name, String dosage, Integer amount,
-//                               String time, String additionalNotes) {
-//        this.name = name;
-//        this.dosage = dosage;
-//        this.amount = amount;
-//        this.time = time;
-//        if(additionalNotes != null) {
-//            this.additionalNotes = additionalNotes;
-//        }
-//    }
-
     public int getMedId() {
         return medId;
     }
