@@ -1,14 +1,21 @@
 package com.example.ashleydsouza.takeyourmeds.fragments;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 
 import com.example.ashleydsouza.takeyourmeds.R;
+import com.example.ashleydsouza.takeyourmeds.models.UserViewModel;
+import com.example.ashleydsouza.takeyourmeds.models.Users;
+import com.example.ashleydsouza.takeyourmeds.utils.Session;
 
 
 /**
@@ -28,6 +35,12 @@ public class Settings extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private Session session;
+    private Users user;
+    private int userId;
+    private Switch notification;
+    private UserViewModel userViewModel;
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,13 +73,43 @@ public class Settings extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        session = new Session(getActivity());
+        userId = session.getUserId();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+        notification = rootView.findViewById(R.id.push_notif_switch);
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        userViewModel.getUser(userId).observe(getActivity(), new Observer<Users>() {
+            @Override
+            public void onChanged(@Nullable Users users) {
+                if(users != null) {
+                    user = users;
+                    isNotificationsOn();
+                }
+            }
+        });
+
+        return rootView;
+    }
+
+    public void isNotificationsOn() {
+        if(user.isSendNotification()) {
+            notification.setChecked(true);
+        }
+    }
+
+    public void updateUserToSendNotification() {
+        if(user.isSendNotification() != notification.isChecked()) {
+            user.setSendNotification(notification.isChecked());
+            userViewModel.updateUser(user);
+        }
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -89,6 +132,7 @@ public class Settings extends Fragment {
 
     @Override
     public void onDetach() {
+        updateUserToSendNotification();
         super.onDetach();
         mListener = null;
     }

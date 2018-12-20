@@ -1,5 +1,6 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
@@ -13,7 +14,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -53,8 +53,6 @@ public class HomePageActivity extends AppCompatActivity
         String email = session.getEmail();
         String name = session.getName();
         int userId = session.getUserId();
-
-        Log.d("HomePageActivity", "Email = " + email + " Name = " + name + " UserId = " + userId);
 
         //set Home as default fragment
         UserHome homeFragment = new UserHome();
@@ -142,42 +140,56 @@ public class HomePageActivity extends AppCompatActivity
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
         Class fragmentClass;
-        switch (menuItem.getItemId()) {
-            case R.id.home_page:
-                fragmentClass = UserHome.class;
-                break;
-            case R.id.add_prescription:
-                fragmentClass = AddPrescription.class;
-                break;
-            case R.id.show_calender:
-                fragmentClass = ShowCalender.class;
-                break;
-            case R.id.settings:
-                fragmentClass = Settings.class;
-                break;
-            default:
-                fragmentClass = UserHome.class;
+
+        //check if logout is selected
+        if(menuItem.getItemId() == R.id.logout) logoutUser();
+
+        else {
+            switch (menuItem.getItemId()) {
+                case R.id.home_page:
+                    fragmentClass = UserHome.class;
+                    break;
+                case R.id.add_prescription:
+                    fragmentClass = AddPrescription.class;
+                    break;
+                case R.id.show_calender:
+                    fragmentClass = ShowCalender.class;
+                    break;
+                case R.id.settings:
+                    fragmentClass = Settings.class;
+                    break;
+                default:
+                    fragmentClass = UserHome.class;
+            }
+
+            try {
+                fragment = (Fragment) fragmentClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (fragment != null) {
+                // Insert the fragment by replacing any existing fragment
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+                /**
+                 * Highlight the selected item has been done by NavigationView,
+                 * Set Action Bar title
+                 * Close navigation drawer
+                 **/
+                menuItem.setChecked(true);
+                setTitle(menuItem.getTitle());
+                mDrawerLayout.closeDrawers();
+            }
         }
+    }
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if(fragment != null) {
-            // Insert the fragment by replacing any existing fragment
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-
-            /**
-             * Highlight the selected item has been done by NavigationView,
-             * Set Action Bar title
-             * Close navigation drawer
-             **/
-            menuItem.setChecked(true);
-            setTitle(menuItem.getTitle());
-            mDrawerLayout.closeDrawers();
+    public void logoutUser() {
+        if(session.isUserLoggedIn()) {
+            session.logoutUser();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 
