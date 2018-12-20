@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.ashleydsouza.takeyourmeds.models.Users;
+import com.google.gson.Gson;
 
 public class Session {
     private SharedPreferences perfs;
@@ -12,7 +13,8 @@ public class Session {
     private String EMAIL = "email";
     private String NAME = "name";
     private String USERID = "userId";
-    private String LOGIN = "login ";
+    private String LOGIN = "login";
+    private String USER_OBJ = "UserObj";
     private String PREFERENCE = "tym";
 
     public Session(Context context) {
@@ -25,6 +27,11 @@ public class Session {
         editor.putString(NAME, user.getName());
         editor.putInt(USERID, user.getUserId());
         editor.putBoolean(LOGIN, true);
+
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        editor.putString(USER_OBJ, json);
+
         editor.commit();
     }
 
@@ -50,6 +57,10 @@ public class Session {
 
     public int getUserId() {
         return perfs.getInt(USERID,-1);
+    }
+
+    public String getUserObj() {
+        return perfs.getString(USER_OBJ,"");
     }
 
     public boolean isUserLoggedIn() {
