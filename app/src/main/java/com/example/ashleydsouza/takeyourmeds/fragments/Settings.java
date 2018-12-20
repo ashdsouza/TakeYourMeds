@@ -95,7 +95,6 @@ public class Settings extends Fragment {
                 }
             }
         });
-        isNotificationsOn();
 
         return rootView;
     }

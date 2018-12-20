@@ -25,6 +25,7 @@
     <string name="homepg_nav_add_prescription">Add Prescription</string>
     <string name="homepg_nav_show_calender">Calender</string>
     <string name="homepg_nav_settings">Settings</string>
+    <string name="homepg_nav_logout">Logout</string>
 
     <!-- Add Prescription Page -->
     <string name="add_pres_title">Enter Medicine Details</string>
