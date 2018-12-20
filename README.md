@@ -1,4 +1,4 @@
-# TakeYourMeds
+# TakeYourMeds (TYM)
 App where a user can add his/her medication. Track them and view them as Calendar events when they need a reminder.
 Register to signup which is very easy. Login once registered.
 There is a clean navigation for different sections of the app.
