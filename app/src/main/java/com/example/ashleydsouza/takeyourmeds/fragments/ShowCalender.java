@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 import java.util.Date;
 
 
@@ -45,6 +47,7 @@ public class ShowCalender extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    public static final String TAG = "ShowCalender";
     private OnFragmentInteractionListener mListener;
     private CompactCalendarView calender;
     private Session session;
@@ -90,15 +93,15 @@ public class ShowCalender extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_show_calender, container, false);
 
-        calender = rootView.findViewById(R.id.calenderView);
-        createCalendarEvent();
-
         RecyclerView recyclerView = rootView.findViewById(R.id.calendar_events);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setHasFixedSize(true);
 
         final CalendarEventAdaptor adapter = new CalendarEventAdaptor();
         recyclerView.setAdapter(adapter);
+
+        calender = rootView.findViewById(R.id.calenderView);
+        createCalendarEvent(adapter);
 
         calender.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
@@ -118,7 +121,7 @@ public class ShowCalender extends Fragment {
     /**
      * Function to fetch events from Firebase and set as Calendar Events
      */
-    public void createCalendarEvent() {
+    public void createCalendarEvent(final CalendarEventAdaptor adapter) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("user-events");
         Query q = dbRef.child(String.valueOf(userId));
         q.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -132,6 +135,8 @@ public class ShowCalender extends Fragment {
                         calender.addEvent(event);
                     }
                 }
+                Calendar now = Calendar.getInstance();
+                adapter.setEvents(calender.getEvents(now.getTime()));
             }
 
             @Override

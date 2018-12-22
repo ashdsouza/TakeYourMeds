@@ -203,7 +203,7 @@ public class HomePageActivity extends AppCompatActivity
         //Do nothing
     }
 
-    public void setEventDailyForAMonth(int userId, String eventString) {
+    public void setEventDailyForAMonth(int userId, int medId, String eventString) {
         Calendar now = Calendar.getInstance();
 
         Calendar end = Calendar.getInstance();
@@ -211,7 +211,7 @@ public class HomePageActivity extends AppCompatActivity
 
         for (Date dt = now.getTime(); !now.after(end);
              now.add(Calendar.DATE, 1), dt = now.getTime()) {
-            CalendarEvent event = new CalendarEvent(userId, Color.GREEN, dt.getTime(), eventString);
+            CalendarEvent event = new CalendarEvent(userId, medId, Color.GREEN, dt.getTime(), eventString);
             instance.saveEvents(event);
         }
     }
@@ -225,7 +225,7 @@ public class HomePageActivity extends AppCompatActivity
             if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
                 String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
                 //set for a month by default
-                setEventDailyForAMonth(med.getUserId(), event);
+                setEventDailyForAMonth(med.getUserId(), med.getMedId(), event);
             }
         }
 

@@ -6,14 +6,16 @@ import java.util.Map;
 
 public class CalendarEvent {
     private Integer userId;
+    private Integer medId;
     private Integer eventColor;
     private Long timeEventAdded;
     private Object description;
 
     public CalendarEvent() {}
 
-    public CalendarEvent(Integer userId, Integer eventColor, Long timeEventAdded, Object description) {
+    public CalendarEvent(Integer userId, Integer medId, Integer eventColor, Long timeEventAdded, Object description) {
         this.userId = userId;
+        this.medId = medId;
         this.eventColor = eventColor;
         this.timeEventAdded = timeEventAdded;
         this.description = description;
@@ -39,6 +41,14 @@ public class CalendarEvent {
         this.userId = userId;
     }
 
+    public Integer getMedId() {
+        return medId;
+    }
+
+    public void setMedId(Integer medId) {
+        this.medId = medId;
+    }
+
     public void setEventColor(Integer eventColor) {
         this.eventColor = eventColor;
     }
@@ -54,6 +64,7 @@ public class CalendarEvent {
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
         result.put("userId", userId);
+        result.put("medId", medId);
         result.put("eventColor", eventColor);
         result.put("timeEventAdded", timeEventAdded);
         result.put("description", description);

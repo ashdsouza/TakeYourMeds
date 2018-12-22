@@ -21,9 +21,18 @@ import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.adapter.GenericAdaptor;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
+import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
+import com.github.sundeepk.compactcalendarview.domain.Event;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -49,6 +58,7 @@ public class UserHome extends Fragment {
     private OnFragmentInteractionListener mListener;
     private MedicineViewModel medViewModel;
     private Session session;
+    private int userId;
 
     public UserHome() {
         // Required empty public constructor
@@ -91,7 +101,7 @@ public class UserHome extends Fragment {
 
         session = new Session(getActivity());
         String name = session.getName();
-        int userId = session.getUserId();
+        userId = session.getUserId();
 
         String welcomeString = "Hi " + name + " !";
         home.setText(welcomeString);
@@ -119,12 +129,42 @@ public class UserHome extends Fragment {
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
-                medViewModel.delete(adapter.getMedsAt(viewHolder.getAdapterPosition()));
+                MedicineInformation med = adapter.getMedsAt(viewHolder.getAdapterPosition());
+                deleteEventsForMed(med.getMedId());
+                medViewModel.delete(med);
                 Toast.makeText(getActivity(), "Medicine Deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);
 
         return rootView;
+    }
+
+    public void deleteEventsForMed(final int medId) {
+        final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("events");
+        DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("user-events");
+        Query q = dbRef.child(String.valueOf(userId));
+        q.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot dataSnap: dataSnapshot.getChildren()) {
+                    String key = dataSnap.getKey();
+                    CalendarEvent calEvent = dataSnap.getValue(CalendarEvent.class);
+                    if(calEvent != null) {
+                        if(calEvent.getMedId() == medId) {
+                            dataSnap.getRef().setValue(null);
+                            if(key != null) {
+                                ref.child(key).setValue(null);
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     // TODO: Rename method, update argument and hook method into UI event
