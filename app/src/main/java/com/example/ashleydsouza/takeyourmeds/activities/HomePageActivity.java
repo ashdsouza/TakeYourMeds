@@ -1,10 +1,13 @@
 package com.example.ashleydsouza.takeyourmeds.activities;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,6 +27,7 @@ import com.example.ashleydsouza.takeyourmeds.fragments.Settings;
 import com.example.ashleydsouza.takeyourmeds.fragments.ShowCalender;
 import com.example.ashleydsouza.takeyourmeds.fragments.UserHome;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEventManager;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
@@ -43,6 +47,8 @@ public class HomePageActivity extends AppCompatActivity
     private NavigationView navigationView;
     private Session session;
     private CalendarEventManager instance;
+    private int userId;
+    private List<MedicineInformation> newMeds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +58,7 @@ public class HomePageActivity extends AppCompatActivity
         session = new Session(HomePageActivity.this);
         String email = session.getEmail();
         String name = session.getName();
-        int userId = session.getUserId();
+        userId = session.getUserId();
 
         //set Home as default fragment
         UserHome homeFragment = new UserHome();
@@ -203,32 +209,27 @@ public class HomePageActivity extends AppCompatActivity
         //Do nothing
     }
 
-    public void setEventDailyForAMonth(int userId, int medId, String eventString) {
-        Calendar now = Calendar.getInstance();
-
-        Calendar end = Calendar.getInstance();
-        end.add(Calendar.MONTH, 1);
-
-        for (Date dt = now.getTime(); !now.after(end);
-             now.add(Calendar.DATE, 1), dt = now.getTime()) {
-            CalendarEvent event = new CalendarEvent(userId, medId, Color.GREEN, dt.getTime(), eventString);
-            instance.saveEvents(event);
-        }
-    }
-
-    @Override
-    public void saveToCalendar(List<MedicineInformation> meds) {
+    public void setEventDailyForAMonth(int userId, List<MedicineInformation> meds) {
         instance = CalendarEventManager.getInstance();
 
         for(int i=0; i< meds.size(); i++) {
             MedicineInformation med = meds.get(i);
             if(med.getTime().equals("Daily") || med.getTime().equals("Hourly")) {
-                String event = "Please take " + med.getAmount() + " of " + med.getName() + " today";
-                //set for a month by default
-                setEventDailyForAMonth(med.getUserId(), med.getMedId(), event);
+                String eventString = "Please take " + med.getAmount() + " of " + med.getName() + " today";
+                Calendar now = Calendar.getInstance();
+                Calendar end = Calendar.getInstance();
+                end.add(Calendar.MONTH, 1);
+                for (Date dt = now.getTime(); !now.after(end);
+                     now.add(Calendar.DATE, 1), dt = now.getTime()) {
+                    CalendarEvent event = new CalendarEvent(userId, med.getMedId(), Color.GREEN, dt.getTime(), eventString);
+                    instance.saveEvents(event);
+                }
             }
         }
+    }
 
-
+    @Override
+    public void saveToCalendar(List<MedicineInformation> meds) {
+        setEventDailyForAMonth(userId, meds);
     }
 }

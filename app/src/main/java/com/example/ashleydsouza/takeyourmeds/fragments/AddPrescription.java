@@ -2,11 +2,13 @@ package com.example.ashleydsouza.takeyourmeds.fragments;
 
 import android.Manifest;
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
@@ -160,18 +162,41 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             try {
                 medViewModel.insert(medicines);
 
-                //check if the toggle is set to save as event in calender
-                if(true) {
-                    mListener.saveToCalendar(medicines);
-                }
-                UserHome homeFragment = new UserHome();
-                getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
-
-                Toast.makeText(getActivity(), "Medicine Data Saved", Toast.LENGTH_SHORT).show();
+                //save as event in calender
+                userMeds();
             } catch(Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void findListIntersection(List<MedicineInformation> meds, List<MedicineInformation> newAddedMeds) {
+        for(int i=0; i < newAddedMeds.size(); i++) {
+            for(int j=0; j< meds.size(); j++) {
+                if(newAddedMeds.get(i).getName().equals(meds.get(j).getName()) && newAddedMeds.get(i).getMedId() == 0) {
+                    newAddedMeds.get(i).setMedId(meds.get(j).getMedId());
+                    break;
+                }
+            }
+        }
+        mListener.saveToCalendar(newAddedMeds);
+    }
+
+    public void userMeds() {
+        MedicineViewModel medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+        medViewModel.getMedsForUser(userId).removeObservers(this);
+        medViewModel.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
+            @Override
+            public void onChanged(@Nullable List<MedicineInformation> medicineInformations) {
+                if(medicineInformations != null && !medicineInformations.isEmpty()) {
+                    findListIntersection(medicineInformations, medicines);
+                    UserHome homeFragment = new UserHome();
+                    getFragmentManager().beginTransaction().replace(R.id.flContent, homeFragment).commit();
+
+                    Toast.makeText(getActivity(), "Medicine Data Saved", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void saveInModel(LinearLayout layout) {
@@ -324,6 +349,6 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-        void saveToCalendar(List<MedicineInformation> medicines);
+        void saveToCalendar(List<MedicineInformation> meds);
     }
 }
