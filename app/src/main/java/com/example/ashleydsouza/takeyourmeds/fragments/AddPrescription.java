@@ -336,6 +336,12 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getActivity().setTitle(R.string.homepg_nav_add_prescription);
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated

@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -63,7 +64,7 @@ public class HomePageActivity extends AppCompatActivity
         //set Home as default fragment
         UserHome homeFragment = new UserHome();
         FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.flContent, homeFragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.flContent, homeFragment).addToBackStack("UserHome").commit();
 
         // Set a Toolbar to replace the ActionBar.
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -93,6 +94,9 @@ public class HomePageActivity extends AppCompatActivity
     public void onBackPressed() {
         if(mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
+            if (getFragmentManager().getBackStackEntryCount() > 0) {
+                getFragmentManager().popBackStack();
+            }
         } else {
             super.onBackPressed();
         }
@@ -146,6 +150,7 @@ public class HomePageActivity extends AppCompatActivity
     public void selectDrawerItem(MenuItem menuItem) {
         Fragment fragment = null;
         Class fragmentClass;
+        String fragmentName = "";
 
         //check if logout is selected
         if(menuItem.getItemId() == R.id.logout) logoutUser();
@@ -154,18 +159,23 @@ public class HomePageActivity extends AppCompatActivity
             switch (menuItem.getItemId()) {
                 case R.id.home_page:
                     fragmentClass = UserHome.class;
+                    fragmentName = "UserHome";
                     break;
                 case R.id.add_prescription:
                     fragmentClass = AddPrescription.class;
+                    fragmentName = "AddPrescription";
                     break;
                 case R.id.show_calender:
                     fragmentClass = ShowCalender.class;
+                    fragmentName = "ShowCalender";
                     break;
                 case R.id.settings:
                     fragmentClass = Settings.class;
+                    fragmentName = "Settings";
                     break;
                 default:
                     fragmentClass = UserHome.class;
+                    fragmentName = "UserHome";
             }
 
             try {
@@ -177,7 +187,7 @@ public class HomePageActivity extends AppCompatActivity
             if (fragment != null) {
                 // Insert the fragment by replacing any existing fragment
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(fragmentName).commit();
 
                 /**
                  * Highlight the selected item has been done by NavigationView,
