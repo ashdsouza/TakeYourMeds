@@ -21,6 +21,7 @@ import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.adapter.GenericAdaptor;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModelRep;
 import com.example.ashleydsouza.takeyourmeds.utils.CalendarEvent;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import com.github.sundeepk.compactcalendarview.domain.Event;
@@ -56,7 +57,8 @@ public class UserHome extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private MedicineViewModel medViewModel;
+//    private MedicineViewModel medViewModel;
+    private MedicineViewModelRep medVM;
     private Session session;
     private int userId;
 
@@ -113,8 +115,16 @@ public class UserHome extends Fragment {
         final GenericAdaptor adapter = new GenericAdaptor();
         recyclerView.setAdapter(adapter);
 
-        medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
-        medViewModel.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
+//        medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+//        medViewModel.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
+//            @Override
+//            public void onChanged(@Nullable List<MedicineInformation> medicineInformations) {
+//                adapter.setMedicines(medicineInformations);
+//            }
+//        });
+
+        medVM = ViewModelProviders.of(this).get(MedicineViewModelRep.class);
+        medVM.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
             @Override
             public void onChanged(@Nullable List<MedicineInformation> medicineInformations) {
                 adapter.setMedicines(medicineInformations);
@@ -131,7 +141,8 @@ public class UserHome extends Fragment {
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
                 MedicineInformation med = adapter.getMedsAt(viewHolder.getAdapterPosition());
                 deleteEventsForMed(med.getMedId());
-                medViewModel.delete(med);
+//                medViewModel.delete(med);
+                medVM.delete(med);
                 Toast.makeText(getActivity(), "Medicine Deleted", Toast.LENGTH_SHORT).show();
             }
         }).attachToRecyclerView(recyclerView);

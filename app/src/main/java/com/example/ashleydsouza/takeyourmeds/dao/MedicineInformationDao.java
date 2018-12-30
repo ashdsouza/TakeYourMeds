@@ -20,6 +20,9 @@ public interface MedicineInformationDao {
     @Insert
     public void insertMedicineInformation(List<MedicineInformation> meds);
 
+    @Insert
+    public void insertMedicineInformation(MedicineInformation... meds);
+
     @Update
     public void updateMedicineInformation(MedicineInformation meds);
 

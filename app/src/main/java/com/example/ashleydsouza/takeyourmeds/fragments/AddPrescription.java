@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.example.ashleydsouza.takeyourmeds.R;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineInformation;
 import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModel;
+import com.example.ashleydsouza.takeyourmeds.models.MedicineViewModelRep;
 import com.example.ashleydsouza.takeyourmeds.utils.Session;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 
@@ -59,7 +60,8 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     private OnFragmentInteractionListener mListener;
     private LinearLayout parentLinearLayout;
     private ArrayList<MedicineInformation> medicines;
-    private MedicineViewModel medViewModel;
+//    private MedicineViewModel medViewModel;
+    private MedicineViewModelRep medVM;
     private Context context;
     private Session session;
     private int userId;
@@ -96,7 +98,8 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+//        medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+        medVM = ViewModelProviders.of(this).get(MedicineViewModelRep.class);
         session = new Session(getActivity());
         userId = session.getUserId();
         calendar = new CompactCalendarView(getContext());
@@ -160,7 +163,8 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
         //check if you have medicine data to add
         if(medicines.size() > 0) {
             try {
-                medViewModel.insert(medicines);
+//                medViewModel.insert(medicines);
+                medVM.insert(medicines);
 
                 //save as event in calender
                 userMeds();
@@ -183,9 +187,9 @@ public class AddPrescription extends Fragment implements View.OnClickListener {
     }
 
     public void userMeds() {
-        MedicineViewModel medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
-        medViewModel.getMedsForUser(userId).removeObservers(this);
-        medViewModel.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
+//        MedicineViewModel medViewModel = ViewModelProviders.of(this).get(MedicineViewModel.class);
+//        medViewModel.getMedsForUser(userId).removeObservers(this);
+        medVM.getMedsForUser(userId).observe(this, new Observer<List<MedicineInformation>>() {
             @Override
             public void onChanged(@Nullable List<MedicineInformation> medicineInformations) {
                 if(medicineInformations != null && !medicineInformations.isEmpty()) {
